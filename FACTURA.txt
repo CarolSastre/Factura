@@ -1,0 +1,30 @@
+FACTURA.js
+	lista_prods
+	carrito
+	formulario_linea
+anadirProducto()
+vaciarCampos()
+
+CARRITO
+	tabla
+	footer
+añadirFila(selectedElement)
+borrarFila()
+borrarCesta() ----> tabla.removeChildren()
+
+FORMULARIO_LINEAS
+	desplegable
+	array[precio, unidades, importe]
+actualizarCampos() // al seleccionar producto
+actualizarImporte()
+	
+LISTA_PRODUCTOS
+	array_productos
+getter()
+guardarProd()
+buscarNombre(elemento) : Indice
+
+PRODUCTO
+	nombre
+	precio
+getters()

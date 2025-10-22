@@ -85,7 +85,10 @@
             <p onclick="mostrar()" style="text-align: right;color:red"><b>X</b></p>
         </div>
         <div style="margin:10px">
-            <pre>     Producto                   Precio                    Unidades              Importe</pre>
+            <pre> Factura                   Producto                   Precio                  Unidades                 Importe</pre>
+            <select name="factura" id="factura">
+                <option selected="selected">Seleccione una factura...</option>
+            </select>
             <select name="producto" id="producto">
                 <option selected="selected">Seleccione un producto...</option>
             </select>
@@ -122,6 +125,9 @@
                 </table>
                 <div class="form-group">
                     <button type="button" class="btn btn-danger">Borrar cesta</button>
+                    <button type="button" class="btn btn-danger">Crear fatura</button>
+                    <button type="button" class="btn btn-danger">Modificar factura</button>
+                    <button type="button" class="btn btn-danger">Eliminar factura</button>
                 </div>
 
             </div>
@@ -142,12 +148,18 @@
 
         window.mostrar = mostrar;
 
+
         import { ListaProductos } from './clases/listaProductos.js';
         import { Formulario } from './clases/formularioLinea.js';
         import { Carrito } from './clases/carrito.js';
         import { Factura } from './clases/factura.js';
 
+        const rutaProductos = "./productos.json";
+        const fs = require('fs');
+
         window.onload = () => {
+            existeArchivo(fs, rutaProductos);
+            leerProductos(fs, rutaProductos);
 
             // campos de 'añadir producto
             const campoProducto = document.getElementById('producto2');
@@ -155,7 +167,7 @@
             const botonProd = document.querySelectorAll('button.verde')[0];
 
             // campos de 'añadir a la cesta'
-            const desplegable = document.querySelectorAll('select[name="producto"]')[0];
+            const desplegableProd = document.querySelectorAll('select[name="producto"]')[0];
             const precio = document.getElementById('precio');
             const unidades = document.getElementById('unidades');
             const importe = document.getElementById('importe');
@@ -166,21 +178,54 @@
             const footer = document.querySelectorAll('#tfoot tr td')[3];
             const borrarCesta = document.getElementsByClassName('btn btn-danger')[0];
 
-            // botonoes tabla
-            //const botones = document.querySelectorAll('td button');
+            // campos para leer y generar facturas
+            const desplegableFac = document.querySelectorAll('select[name="factura"]')[0];
+            const crearFac = document.getElementsByClassName('btn btn-danger')[1];
+            const modFac = document.getElementsByClassName('btn btn-danger')[2];
+            const eliminarFac = document.getElementsByClassName('btn btn-danger')[3];
 
             // instancias
             const lista = new ListaProductos();
-            const formulario = new Formulario(desplegable, precio, unidades, importe);
+            const formulario = new Formulario(desplegableProd, precio, unidades, importe);
             const carrito = new Carrito(tabla, footer);
             const factura = new Factura(campoProducto, campoPrecio, lista, carrito, formulario);
 
             botonProd.addEventListener('click', () => factura.anadirProducto());
-            desplegable.addEventListener('change', () => formulario.actualizarCampos(lista));
-            unidades.addEventListener('input', () => formulario.actualizarImporte()); // el texto va cambiando comforme modifique
+            desplegableProd.addEventListener('change', () => formulario.actualizarCampos(lista));
+            unidades.addEventListener('input', () => formulario.actualizarImporte()); // el texto va cambiando comforme se modifica
             botonCesta.addEventListener('click', () => carrito.anadirFila(formulario));
-            borrarCesta.addEventListener('click', () => carrito.borrarCesta());            
+            borrarCesta.addEventListener('click', () => carrito.borrarCesta());
         }
+
+        function existeArchivo(fs, filePath) {
+            return new Promise((resolve, reject) => {
+                fs.access(filePath,
+                    (err) => {
+                        console.log(`${filePath} ${err ? 'does not exist' : 'exists'}`);
+                    });
+            })
+        }
+
+        // ! esto no furula
+        function leerProductos(fs, filePath) {
+            fs.open(filePath, 'r', (err, fd) => {
+                if (err) {
+                    if (err.code === 'ENOENT') {
+                        console.error(filePath + ' does not exist');
+                        return;
+                    }
+
+                    throw err;
+                }
+
+                try {
+                    fs.read(fd);
+                } catch (e) {
+                    console.log(e);
+                }
+            });
+        }
+
     </script>
 </body>
 

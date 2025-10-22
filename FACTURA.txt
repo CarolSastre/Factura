@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 FACTURA.js
 	lista_prods
 	carrito
@@ -28,3 +29,48 @@ PRODUCTO
 	nombre
 	precio
 getters()
+=======
+FACTURA.js
+	lista_prods
+	carrito
+	formulario_linea
+anadirProducto()
+vaciarCampos()
+
+CARRITO
+	tabla
+	footer
+añadirFila(selectedElement)
+borrarFila()
+borrarCesta() ----> tabla.removeChildren()
+
+FORMULARIO_LINEAS
+	desplegable
+	array[precio, unidades, importe]
+actualizarCampos() // al seleccionar producto
+actualizarImporte()
+	
+LISTA_PRODUCTOS
+	array_productos
+getter()
+guardarProd()
+buscarNombre(elemento) : Indice
+
+PRODUCTO
+	nombre
+	precio
+getters()
+
+---------------------------------------------------------
+
+--------
+
+HTML
+- crear el desplegable para las facturas
+- crear los botones 'guardar factura', 'modificar factura', 'eliminar cesta'
+
+Luego hay que enfocarse en guardar un archivo de los productos
+-> dentro el js del html -onload tiene que estar LO PRIMERO DE TODO algo que verifique si existe el archivo producto (que lo cargue si existe o que lo cree vacío sino)
+-> crear métodos de lectura y escritura (sólo para productos y factura o uno generico para todos????)
+RECUERDA INCLUIR PROMESAS --> todo método que influya acceder y modificar un fichero debe hacerse con promesas
+>>>>>>> main

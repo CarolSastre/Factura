@@ -1,0 +1,44 @@
+JACASCRIPT
+    export function/class
+    import { function/class } from './_______.js' 
+
+NODE.JS
+    const fs = require('fs');
+    const data = require('ruta/a/archivo/nombre de archivo')
+    (comandos de instalación en la pag de los apuntes)
+    - Documentacion: https://nodejs.org/docs/latest-v22.x/api/fs.html
+
+------
+FICHEROS JSON
+productos.json>
+    [
+        {
+            descripcion: ____ ,
+            precio: ____
+        },
+        {
+            descripcion: ____ ,
+            precio: ____
+        }
+    ]
+
+MÉTODOS IMP. PARA ACCEDER A DATOS
+    fs.existsSync(path) *deprecated* ---> fs.open()
+    fs.unlink(path, callback)
+    fs.readdir(path[, options], callback) <-- versión a síncrona
+
+momentjs.com ----> npm install moment --save
+
+DIRECTRICES TAREA 2
+- Crear factura > guardar en JSON
+- Seleccionar fatura > Leer factura > leer del JSON
+- Guardar productos en JSON a parte
+
+return new Promise ((resolve, reject) => {
+    redFile (data)
+    resolve(data)
+})
+metodo.then(() => {});
+
+productos[] (array productos) --------> productosJSON[] (array jsons)
+JSON.stringfy(productosJSON)<---- cadena de texto

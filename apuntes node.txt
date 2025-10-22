@@ -23,7 +23,7 @@ productos.json>
     ]
 
 MÉTODOS IMP. PARA ACCEDER A DATOS
-    fs.existsSync(path)
+    fs.existsSync(path) *deprecated* ---> fs.open()
     fs.unlink(path, callback)
     fs.readdir(path[, options], callback) <-- versión a síncrona
 
@@ -34,8 +34,8 @@ DIRECTRICES TAREA 2
 - Seleccionar fatura > Leer factura > leer del JSON
 - Guardar productos en JSON a parte
 
---------
-
-HTML
-- crear el desplegable para las facturas
-- crear los botones 'guardar factura', 'modificar factura', 'eliminar cesta'
+return new Promise ((resolve, reject) => {
+    redFile (data)
+    resolve(data)
+})
+metodo.then(() => {});

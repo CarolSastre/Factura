@@ -85,7 +85,10 @@
             <p onclick="mostrar()" style="text-align: right;color:red"><b>X</b></p>
         </div>
         <div style="margin:10px">
-            <pre>     Producto                   Precio                    Unidades              Importe</pre>
+            <pre>Factura         Producto                   Precio                    Unidades              Importe</pre>
+            <select name="factura" id="fcatura">
+                <option selected="selected">Seleccione una factura...</option>
+            </select>
             <select name="producto" id="producto">
                 <option selected="selected">Seleccione un producto...</option>
             </select>
@@ -122,6 +125,9 @@
                 </table>
                 <div class="form-group">
                     <button type="button" class="btn btn-danger">Borrar cesta</button>
+                    <button type="button" class="btn btn-danger">Crear fatura</button>
+                    <button type="button" class="btn btn-danger">Modificar factura</button>
+                    <button type="button" class="btn btn-danger">Eliminar factura</button>
                 </div>
 
             </div>

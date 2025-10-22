@@ -33,3 +33,9 @@ DIRECTRICES TAREA 2
 - Crear factura > guardar en JSON
 - Seleccionar fatura > Leer factura > leer del JSON
 - Guardar productos en JSON a parte
+
+--------
+
+HTML
+- crear el desplegable para las facturas
+- crear los botones 'guardar factura', 'modificar factura', 'eliminar cesta'

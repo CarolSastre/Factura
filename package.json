@@ -12,6 +12,14 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^38.3.0"
-  }
+    "electron": "^38.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CarolSastre/Factura.git"
+  },
+  "bugs": {
+    "url": "https://github.com/CarolSastre/Factura/issues"
+  },
+  "homepage": "https://github.com/CarolSastre/Factura#readme"
 }

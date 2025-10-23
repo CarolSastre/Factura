@@ -159,8 +159,9 @@
             //existeArchivo(fs, rutaProductos);
             //leerProductos(fs, rutaProductos);
             const productoFile = new productoFileManager();
-            
-            productoFile.guardarArchivo("[{hola}]");
+
+            productoFile.leerArchivo();
+            //productoFile.guardarArchivo("[{hola}]");
 
             // campos de 'añadir producto
             const campoProducto = document.getElementById('producto2');

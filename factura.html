@@ -153,10 +153,14 @@
         import { Formulario } from './clases/formularioLinea.js';
         import { Carrito } from './clases/carrito.js';
         import { Factura } from './clases/factura.js';
+        import { productoFileManager } from './clases/productoFileManager.js';
 
         window.onload = () => {
             //existeArchivo(fs, rutaProductos);
             //leerProductos(fs, rutaProductos);
+            const productoFile = new productoFileManager();
+            
+            productoFile.leerArchivo();
 
             // campos de 'añadir producto
             const campoProducto = document.getElementById('producto2');

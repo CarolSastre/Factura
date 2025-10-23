@@ -25,7 +25,7 @@ productos.json>
 MÉTODOS IMP. PARA ACCEDER A DATOS
     fs.existsSync(path) *deprecated* ---> fs.open()
     fs.unlink(path, callback)
-    fs.readdir(path[, options], callback) <-- versión a síncrona
+    fs.readdir(path[, options], callback) <-- versión asíncrona
 
 momentjs.com ----> npm install moment --save
 

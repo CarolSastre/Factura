@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 export class Factura {
     // div alta
     #camposProducto
@@ -33,5 +35,34 @@ export class Factura {
 
             this.limpiarCampos();
         }
+    }
+    
+    existeArchivo(fs, filePath) {
+        return new Promise((resolve, reject) => {
+            fs.access(filePath,
+                (err) => {
+                    console.log(`${filePath} ${err ? 'does not exist' : 'exists'}`);
+                });
+        })
+    }
+
+    // ! esto no furula
+    leerProductos(fs, filePath) {
+        fs.open(filePath, 'r', (err, fd) => {
+            if (err) {
+                if (err.code === 'ENOENT') {
+                    console.error(filePath + ' does not exist');
+                    return;
+                }
+
+                throw err;
+            }
+
+            try {
+                fs.read(fd);
+            } catch (e) {
+                console.log(e);
+            }
+        });
     }
 }

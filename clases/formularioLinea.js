@@ -11,8 +11,6 @@ export class Formulario {
     getCampos = () => this.#campos;
 
     cargarProductos(lista) {
-        console.log("Ha entrado en formulario.cargarProductos");
-
         console.log(lista.getProductos());
 
         this.#desplegable.innerHTML = "<option selected=\"selected\">Seleccione un producto...</option>";
@@ -31,15 +29,15 @@ export class Formulario {
      * @returns string
      */
     getSelectedOptionNombre() {
-        console.log("Ha entrado en formulario.getSelectedOptionNombre");
-
         const indice = this.#desplegable.selectedIndex;
         return this.#desplegable.options[indice].value;
     }
 
+    /**
+     * 
+     * @param lista 
+     */
     actualizarCampos(lista) {
-        console.log("Ha entrado en formulario.actualizarCampos");
-
         const nombre = this.getSelectedOptionNombre();
 
         const producto = lista.buscarProducto(nombre);
@@ -50,14 +48,12 @@ export class Formulario {
 
         // asignar valores en los campos
         this.#campos[0].value = producto.getPrecio();
-        this.#campos[1].value = "1";
+        this.#campos[1].value = 1;
 
         this.actualizarImporte();
     }
 
     actualizarImporte() {
-        console.log("Ha entrado en formulario.actualizarImporte");
-
         const result = Number.parseFloat(this.#campos[0].value) * Number.parseFloat(this.#campos[1].value);
         if (isNaN(result)) { // esto puede ser funcional
             this.#campos[2].value = "";

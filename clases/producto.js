@@ -9,4 +9,11 @@ export class Producto {
 
     getNombre = () => this.#nombre;
     getPrecio = () => this.#precio;
+
+    toJSON(){
+        return {
+            nombre: this.#nombre,
+            precio: this.#precio
+        }
+    }
 }

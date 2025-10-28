@@ -17,7 +17,7 @@ export class Carrito {
         });
 
         // cambiar contenido del total
-        this.#footer.textContent = total;
+        this.#footer.textContent = total + " €";
     }
 
     anadirFila(formulario) {

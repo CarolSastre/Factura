@@ -47,7 +47,7 @@ export class Formulario {
         this.#campos[2].disabled = true;
 
         // asignar valores en los campos
-        this.#campos[0].value = producto.getPrecio();
+        this.#campos[0].value = producto.getPrecio() +" €";
         this.#campos[1].value = 1;
 
         this.actualizarImporte();
@@ -58,7 +58,7 @@ export class Formulario {
         if (isNaN(result)) { // esto puede ser funcional
             this.#campos[2].value = "";
         } else {
-            this.#campos[2].value = result;
+            this.#campos[2].value = result + " €";
         }
     }
 }

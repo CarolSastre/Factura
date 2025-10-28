@@ -1,5 +1,7 @@
 const fs = require('fs');
 
+import { valCamposProducto } from './validar.js';
+
 export class Factura {
     // div alta
     #camposProducto
@@ -27,12 +29,28 @@ export class Factura {
         if (this.#lista_productos.buscarProducto(nombre) !== undefined) { // ya existe 
             alert('El producto ya existe en la lista.');
         } else { // no existe
-            // guarda el producto en la lista
-            this.#lista_productos.guardarProducto(nombre, precio);
+            /*
+                // guarda el producto en la lista
+                this.#lista_productos.guardarProducto(nombre, precio);
+    
+                // añade el producto en el desplegable
+                this.#formulario.cargarProductos(this.#lista_productos);
+    
+                this.limpiarCampos();
+            */
+            try {
+                valCamposProducto(nombre, precio);
 
-            // añade el producto en el desplegable
-            this.#formulario.cargarProductos(this.#lista_productos);
+                // guarda el producto en la lista
+                this.#lista_productos.guardarProducto(nombre, precio);
 
+                // añade el producto en el desplegable
+                this.#formulario.cargarProductos(this.#lista_productos);
+
+            } catch (error) {
+                alert(error.nombre + ": " + error.message);
+                console.log(error.stack);
+            }
             this.limpiarCampos();
         }
     }

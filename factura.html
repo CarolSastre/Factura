@@ -153,14 +153,15 @@
         import { Formulario } from './clases/formularioLinea.js';
         import { Carrito } from './clases/carrito.js';
         import { Factura } from './clases/factura.js';
-        import { productoFileManager } from './clases/productoFileManager.js';
+        import { productosFileManager } from './clases/productosFileManager.js';
 
         window.onload = () => {
             //existeArchivo(fs, rutaProductos);
             //leerProductos(fs, rutaProductos);
-            const productoFile = new productoFileManager();
+            const productosFile = new productosFileManager();
 
-            productoFile.leerArchivo();
+            //productosFile.leerArchivoGeek();
+
             //productoFile.guardarArchivo("[{hola}]");
 
             // campos de 'añadir producto
@@ -191,6 +192,8 @@
             const formulario = new Formulario(desplegableProd, precio, unidades, importe);
             const carrito = new Carrito(tabla, footer);
             const factura = new Factura(campoProducto, campoPrecio, lista, carrito, formulario);
+
+            lista.leerArchivo();
 
             botonProd.addEventListener('click', () => factura.anadirProducto());
             desplegableProd.addEventListener('change', () => formulario.actualizarCampos(lista));

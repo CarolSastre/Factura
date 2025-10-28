@@ -2,5 +2,13 @@
   {
     "nombre": "Queso",
     "precio": 6.69
+  },
+  {
+    "nombre": "Harina (1kg)",
+    "precio": 3.5
+  },
+  {
+    "nombre": "Detergente",
+    "precio": 6.24
   }
 ]

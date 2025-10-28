@@ -21,6 +21,9 @@ export class Carrito {
     }
 
     anadirFila(formulario) {
+        const campos = formulario.getCampos();
+
+        // ! a partir de aquí NO EXISTE EN EL CARRITO
         // crear nueva fila
         let nuevaFila = document.createElement('tr');
 
@@ -30,7 +33,6 @@ export class Carrito {
         nuevaFila.append(celdaP);
 
         // añadir precio, unidades, importe
-        const campos = formulario.getCampos();
         campos.forEach((campo) => {
             // crear celda
             const celda = document.createElement('td');
@@ -64,6 +66,10 @@ export class Carrito {
         this.#tabla.append(nuevaFila);
 
         this.actualizarTotal();
+    }
+
+    existeProducto(){
+
     }
 
     borrarCesta() {

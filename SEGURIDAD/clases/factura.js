@@ -38,19 +38,17 @@ export class Factura {
     
                 this.limpiarCampos();
             */
-            try {
-                valCamposProducto(nombre, precio);
+           
+            // TODO: arreglar esto porque no es muy funcional
+            valCamposProducto(nombre, precio).catch(function (e) {
+            });
 
-                // guarda el producto en la lista
-                this.#lista_productos.guardarProducto(nombre, precio);
+            // guarda el producto en la lista
+            this.#lista_productos.guardarProducto(nombre, precio);
 
-                // añade el producto en el desplegable
-                this.#formulario.cargarProductos(this.#lista_productos);
+            // añade el producto en el desplegable
+            this.#formulario.cargarProductos(this.#lista_productos);
 
-            } catch (error) {
-                alert(error.nombre + ": " + error.message);
-                console.log(error.stack);
-            }
             this.limpiarCampos();
         }
     }

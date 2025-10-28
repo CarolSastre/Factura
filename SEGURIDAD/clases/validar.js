@@ -9,7 +9,7 @@ export function valCamposProducto(nombre, precio) {
     if (nombre === "") {
         throw new Validar("El nombre no puede estar vacío");
     }
-    if (isNaN(precio)) {
+    if (isNaN(precio) || precio === "") {
         throw new Validar("El precio tiene que ser un número entero o decimal");
     }
 }

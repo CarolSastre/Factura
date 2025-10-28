@@ -1,4 +1,4 @@
-export default class Producto {
+export class Producto {
     #nombre;
     #precio;    
 

@@ -1,66 +1,74 @@
-import Linea from './linea.js';
-
-export default class carrito {
-
-    #lineas // lista de lineas
-    #total
+export class Carrito {
     #tabla
-    #campos
+    #footer
 
-    constructor(total, tabla, precio, unidades, importe) {
-        this.#tabla = tabla; // tbody
-        this.#total = total; // tfoot>tr><td[3]
-        this.#campos = [precio, unidades, importe];
-        this.#lineas = [];
+    constructor(tabla, footer) {
+        this.#tabla = tabla;
+        this.#footer = footer;
     }
 
-    getCampos = () => this.#campos;
+    actualizarTotal() {
+        let total = 0.00;
 
-    anadirLinea(producto) {
+        const filas = this.#tabla.children;
 
+        Array.from(filas).forEach((tr) => {
+            total += Number.parseFloat(tr.children[3].textContent);
+        });
+
+        // cambiar contenido del total
+        this.#footer.textContent = total;
+    }
+
+    anadirFila(formulario) {
         // crear nueva fila
         let nuevaFila = document.createElement('tr');
 
         // añadir producto
         const celdaP = document.createElement('td');
-        celdaP.textContent = producto.textContent;
+        celdaP.textContent = formulario.getSelectedOptionNombre();
         nuevaFila.append(celdaP);
 
         // añadir precio, unidades, importe
-        this.#campos.forEach((campo) => {
+        const campos = formulario.getCampos();
+        campos.forEach((campo) => {
             // crear celda
             const celda = document.createElement('td');
             // le introduzco el valor
             celda.textContent = campo.value;
+            celda.setAttribute('align', 'right');
             // añadir a la fila
             nuevaFila.append(celda);
         });
 
         // crear y añadir botón de borrar
         const celdaB = document.createElement('td');
-        celdaB.innerHTML = "<button class=\"rojo\" type=\"button\" onclick=\"carrito.borrarLinea(this)\">X</button>";
+        const boton = document.createElement('button');
+        boton.textContent = "X";
+        boton.setAttribute('class', 'rojo');
+        boton.setAttribute('type', 'button');
+
+        
+        boton.onclick = (e) => {
+            let fila = e.srcElement.parentNode.parentNode;
+
+            fila.parentNode.removeChild(fila);
+
+            this.actualizarTotal();
+        }
+
+        celdaB.append(boton);
         nuevaFila.append(celdaB);
 
         // añadir la fila a la tabla
         this.#tabla.append(nuevaFila);
-        
-        // guardar la fila en el listado de lineas ?
-        /*
-        const linea = new Linea();
-        this.#lineas.push(linea);*/
-    }
 
-    borrarLinea(element) {
-        let fila = element.parentNode.parentNode;
-
-        this.#tabla.removeChild(fila);
+        this.actualizarTotal();
     }
 
     borrarCesta() {
+        this.#tabla.innerHTML = "";
 
-    }
-
-    actualizar() { // 
-
+        this.actualizarTotal();
     }
 }

@@ -85,7 +85,7 @@
             <p onclick="mostrar()" style="text-align: right;color:red"><b>X</b></p>
         </div>
         <div style="margin:10px">
-            <pre>     Producto                   Precio                    Unidades              Importe</pre>
+            <pre> Producto                   Precio                  Unidades                 Importe</pre>
             <select name="producto" id="producto">
                 <option selected="selected">Seleccione un producto...</option>
             </select>
@@ -142,42 +142,47 @@
 
         window.mostrar = mostrar;
 
-        import Carrito from './clases/carrito.js';
-        import Factura from './clases/factura.js';
+
+        import { ListaProductos } from './clases/listaProductos.js';
+        import { Formulario } from './clases/formularioLinea.js';
+        import { Carrito } from './clases/carrito.js';
+        import { Factura } from './clases/factura.js';
 
         window.onload = () => {
-
-            /* campos de 'añadir producto */
+            // campos de 'añadir producto'
             const campoProducto = document.getElementById('producto2');
             const campoPrecio = document.getElementById('precio2');
             const botonProd = document.querySelectorAll('button.verde')[0];
 
-            /* campos de 'añadir a la cesta' */
-            const desplegable = document.querySelectorAll('select[name="producto"]')[0];
+            // campos de 'añadir a la cesta'
+            const desplegableProd = document.querySelectorAll('select[name="producto"]')[0];
             const precio = document.getElementById('precio');
             const unidades = document.getElementById('unidades');
             const importe = document.getElementById('importe');
             const botonCesta = document.querySelectorAll('button.verde')[1];
 
-            /* campos de la tabla */
+            // campos de la tabla
             const tabla = document.querySelectorAll('tbody')[0];
-            const total = document.querySelectorAll('#tfoot tr td')[3];
-            const borrarCesta = document.querySelectorAll('.btn btn-danger')[0];
+            const footer = document.querySelectorAll('#tfoot tr td')[3];
+            const borrarCesta = document.getElementsByClassName('btn btn-danger')[0];
 
-            const carrito = new Carrito(total, tabla, precio, unidades, importe);
-            const factura = new Factura(
-                carrito,
-                desplegable,
-                campoProducto,
-                campoPrecio
-            );
+            // campos para leer y generar facturas
+            const desplegableFac = document.querySelectorAll('select[name="factura"]')[0];
+            const crearFac = document.getElementsByClassName('btn btn-danger')[1];
+            const modFac = document.getElementsByClassName('btn btn-danger')[2];
+            const eliminarFac = document.getElementsByClassName('btn btn-danger')[3];
+
+            // instancias
+            const lista = new ListaProductos();
+            const formulario = new Formulario(desplegableProd, precio, unidades, importe);
+            const carrito = new Carrito(tabla, footer);
+            const factura = new Factura(campoProducto, campoPrecio, lista, carrito, formulario);
 
             botonProd.addEventListener('click', () => factura.anadirProducto());
-            desplegable.addEventListener('change', () => factura.seleccionarProd());
-            unidades.addEventListener('input', () => factura.cambiarImporte()); // el evento 'input' para que vaya cambiando comforme se añaden unidades
-            botonCesta.addEventListener('click', () => carrito.anadirLinea(desplegable));
-
-            //borrarCesta.eventListener('click', () => factura.borrarCesta());
+            desplegableProd.addEventListener('change', () => formulario.actualizarCampos(lista));
+            unidades.addEventListener('input', () => formulario.actualizarImporte()); // el texto va cambiando comforme se modifica
+            botonCesta.addEventListener('click', () => carrito.anadirFila(formulario));
+            borrarCesta.addEventListener('click', () => carrito.borrarCesta());
         }
     </script>
 </body>

@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/CarolSastre/Factura/issues"
   },
-  "homepage": "https://github.com/CarolSastre/Factura#readme"
+  "homepage": "https://github.com/CarolSastre/Factura#readme",
+  "dependencies": {
+    "moment": "^2.30.1"
+  }
 }

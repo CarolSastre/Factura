@@ -1,5 +1,5 @@
 const fs = require('fs');
-const 
+const moment = require('moment');
 
 export class Carrito {
     #tabla
@@ -9,6 +9,8 @@ export class Carrito {
         this.#tabla = tabla;
         this.#footer = footer;
     }
+
+    getTabla = () => this.#tabla
 
     actualizarTotal() {
         let total = 0.00;
@@ -96,7 +98,6 @@ export class Carrito {
     }
 
     toJSON() {
-
         return {
 
         }

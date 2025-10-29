@@ -125,7 +125,7 @@
                 </table>
                 <div class="form-group">
                     <button type="button" class="btn btn-danger">Borrar cesta</button>
-                    <button type="button" class="btn btn-danger">Crear fatura</button>
+                    <button type="button" class="btn btn-danger">Crear factura</button>
                     <button type="button" class="btn btn-danger">Modificar factura</button>
                     <button type="button" class="btn btn-danger">Eliminar factura</button>
                 </div>
@@ -154,6 +154,7 @@
         import { Carrito } from './clases/carrito.js';
         import { Factura } from './clases/factura.js';
         import { productosFileManager } from './clases/productosFileManager.js';
+        import { FacturaFileManager } from './clases/facturaFileManager.js';
 
         window.onload = () => {
 
@@ -185,8 +186,11 @@
             const formulario = new Formulario(desplegableProd, precio, unidades, importe);
             const carrito = new Carrito(tabla, footer);
             const factura = new Factura(campoProducto, campoPrecio, lista, carrito, formulario);
+            const facturaFiles = new FacturaFileManager();
 
             factura.leerArchivoProductos();
+
+            facturaFiles.crearFactura(carrito);
  
             botonProd.addEventListener('click', () => factura.anadirProducto());
             desplegableProd.addEventListener('change', () => formulario.actualizarCampos(lista));

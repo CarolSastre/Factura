@@ -53,11 +53,8 @@ export class Factura {
             const productos = JSON.parse(buffer.toString());
 
             Array.from(productos).forEach(prod => {
-                console.log("Nombre: " + prod.nombre);
                 this.#lista_productos.guardarProducto(new Producto(prod.nombre, prod.precio));
             });
-
-            console.log("Lista de productos: " + this.#lista_productos);
 
             this.#formulario.cargarProductos(this.#lista_productos);
         });

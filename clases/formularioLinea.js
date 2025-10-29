@@ -11,8 +11,6 @@ export class Formulario {
     getCampos = () => this.#campos;
 
     cargarProductos(lista) {
-        console.log(lista.getProductos());
-
         this.#desplegable.innerHTML = "<option selected=\"selected\">Seleccione un producto...</option>";
 
         lista.getProductos().forEach((producto) => {
@@ -59,6 +57,11 @@ export class Formulario {
             this.#campos[2].value = "";
         } else {
             this.#campos[2].value = result + " €";
+        }
+    }
+
+    toJSON(){
+        return {
         }
     }
 }

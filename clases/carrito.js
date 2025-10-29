@@ -1,3 +1,6 @@
+const fs = require('fs');
+const 
+
 export class Carrito {
     #tabla
     #footer
@@ -17,64 +20,85 @@ export class Carrito {
         });
 
         // cambiar contenido del total
-        this.#footer.textContent = total + " €";
+        this.#footer.textContent = total.toFixed(2) + " €";
     }
 
     anadirFila(formulario) {
         const campos = formulario.getCampos();
 
-        // ! a partir de aquí NO EXISTE EN EL CARRITO
-        // crear nueva fila
-        let nuevaFila = document.createElement('tr');
+        const nombre = formulario.getSelectedOptionNombre();
 
-        // añadir producto
-        const celdaP = document.createElement('td');
-        celdaP.textContent = formulario.getSelectedOptionNombre();
-        nuevaFila.append(celdaP);
+        const fila = this.existeProducto(nombre);
+        if (!fila) { // no existe
+            // crear nueva fila
+            let nuevaFila = document.createElement('tr');
 
-        // añadir precio, unidades, importe
-        campos.forEach((campo) => {
-            // crear celda
-            const celda = document.createElement('td');
-            // le introduzco el valor
-            celda.textContent = campo.value;
-            celda.setAttribute('align', 'right');
-            // añadir a la fila
-            nuevaFila.append(celda);
-        });
+            // añadir producto
+            const celdaP = document.createElement('td');
+            celdaP.textContent = nombre;
+            nuevaFila.append(celdaP);
 
-        // crear y añadir botón de borrar
-        const celdaB = document.createElement('td');
-        const boton = document.createElement('button');
-        boton.textContent = "X";
-        boton.setAttribute('class', 'rojo');
-        boton.setAttribute('type', 'button');
+            // añadir precio, unidades, importe
+            campos.forEach((campo) => {
+                // crear celda
+                const celda = document.createElement('td');
+                // le introduzco el valor
+                celda.textContent = campo.value;
+                celda.setAttribute('align', 'right');
+                // añadir a la fila
+                nuevaFila.append(celda);
+            });
 
-        
-        boton.onclick = (e) => {
-            let fila = e.srcElement.parentNode.parentNode;
+            // crear y añadir botón de borrar
+            const celdaB = document.createElement('td');
+            const boton = document.createElement('button');
+            boton.textContent = "X";
+            boton.setAttribute('class', 'rojo');
+            boton.setAttribute('type', 'button');
 
-            fila.parentNode.removeChild(fila);
 
-            this.actualizarTotal();
+            boton.onclick = (e) => {
+                let fila = e.srcElement.parentNode.parentNode;
+
+                fila.parentNode.removeChild(fila);
+
+                this.actualizarTotal();
+            }
+
+            celdaB.append(boton);
+            nuevaFila.append(celdaB);
+
+            // añadir la fila a la tabla
+            this.#tabla.append(nuevaFila);
+        } else { // existe
+            let nuevaCantidad = Number.parseInt(fila.children[2].textContent);  //cantidad
+            nuevaCantidad += Number.parseFloat(campos[1].value);
+
+            let nuevoImporte = nuevaCantidad * Number.parseFloat(campos[0].value); // importe
+
+            fila.children[2].textContent = nuevaCantidad;
+            fila.children[3].textContent = nuevoImporte.toFixed(2) + " €";
         }
-
-        celdaB.append(boton);
-        nuevaFila.append(celdaB);
-
-        // añadir la fila a la tabla
-        this.#tabla.append(nuevaFila);
 
         this.actualizarTotal();
     }
 
-    existeProducto(){
-
+    existeProducto(nombre) {
+        const filas = this.#tabla.querySelectorAll('tr');
+        const result = Array.from(filas).find((fila) => fila.children[0].textContent === nombre);
+        return result;
     }
 
     borrarCesta() {
         this.#tabla.innerHTML = "";
 
         this.actualizarTotal();
+    }
+
+    toJSON() {
+
+        return {
+
+        }
     }
 }

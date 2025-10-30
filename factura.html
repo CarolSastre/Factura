@@ -153,7 +153,7 @@
         import { Formulario } from './clases/formularioLinea.js';
         import { Carrito } from './clases/carrito.js';
         import { Factura } from './clases/factura.js';
-        import { productosFileManager } from './clases/productosFileManager.js';
+        import { ProductosFileManager } from './clases/productosFileManager.js';
         import { FacturaFileManager } from './clases/facturaFileManager.js';
 
         window.onload = () => {
@@ -185,18 +185,19 @@
             const lista = new ListaProductos();
             const formulario = new Formulario(desplegableProd, precio, unidades, importe);
             const carrito = new Carrito(tabla, footer);
-            const factura = new Factura(campoProducto, campoPrecio, lista, carrito, formulario);
+            const prodFiles = new ProductosFileManager(lista, formulario);
             const facturaFiles = new FacturaFileManager();
 
-            factura.leerArchivoProductos();
+            const factura = new Factura(campoProducto, campoPrecio, lista, carrito, formulario, prodFiles, facturaFiles, desplegableFac);
 
-            facturaFiles.crearFactura(carrito);
- 
+            prodFiles.leerArchivoProductos();
+
             botonProd.addEventListener('click', () => factura.anadirProducto());
             desplegableProd.addEventListener('change', () => formulario.actualizarCampos(lista));
             unidades.addEventListener('input', () => formulario.actualizarImporte()); // el texto va cambiando comforme se modifica
             botonCesta.addEventListener('click', () => carrito.anadirFila(formulario));
             borrarCesta.addEventListener('click', () => carrito.borrarCesta());
+            crearFac.addEventListener('click', () => factura.crearFactura());
         }
     </script>
 </body>

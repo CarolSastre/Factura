@@ -1,0 +1,11 @@
+{
+  "fecha": "2025_10_30_07-09-05",
+  "total": 6.69,
+  "productos": [
+    {
+      "nombre": "Queso",
+      "precio": 6.69,
+      "cantidad": 1
+    }
+  ]
+}

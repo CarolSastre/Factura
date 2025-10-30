@@ -2,104 +2,37 @@ const fs = require('fs');
 
 const path = "./productos.json";
 
-import { ListaProductos } from './listaProductos.js';
+import { Producto } from './producto.js';
 
-export class productosFileManager {
+export class ProductosFileManager {
     #listaP
+    #form
 
-    constructor(){
-        this.#listaP = new ListaProductos();
+    constructor(lista_productos, formulario){
+        this.#listaP = lista_productos;
+        this.#form = formulario;
     }
 
-    getLista = () => { return this.#listaP }
+    leerArchivoProductos() {
+        // leer archivo
+        fs.readFile(path, (err, buffer) => {
+            if (err) console.error("Error leyendo el archivo: " + err.message);
 
-    leerArchivoGeek() {
-        // abrir archivo
-        fs.open(path, 'r', (err, fd) => {
-            if (err) console.error("Error abriendo el archivo: " + err.message);
+            const productos = JSON.parse(buffer.toString());
 
-            // leer archivo
-            fs.read(fd, (err, bytesRead, buffer) => {
-                if (err) console.error("Error leyendo el archivo: " + err.message);
-
-                if (bytesRead > 0) {
-                    const productos = JSON.parse(buffer.slice(0, bytesRead).toString());
-                    console.log(productos);
-
-                    Array.from(productos).forEach(prod => {
-                        console.log(prod);
-                        this.#listaP.guardarProducto(prod[0], prod[1]);
-                    });
-
-                    console.log(this.#listaP.getProductos);
-                }
-
-                // cerrar archivo
-                fs.close(fd, (err) => {
-                    if (err) console.error("Error al cerrar el archivo: " + err)
-                    else console.log("Archivo cerrado con exito");
-                });
+            Array.from(productos).forEach(prod => {
+                this.#listaP.guardarProducto(new Producto(prod.nombre, prod.precio));
             });
+
+            this.#form.cargarProductos(this.#listaP);
         });
     }
 
-    guardarArchivoGeek() {
-        fs.open(path, 'w', (err, fd) => {
-            if (err) {
-                return console.error("Error opening file: " + err);
-            }
-            console.log("File descriptor: " + fd);
-            fs.write(fd, (err, resolve) => {
-                if (err) {
-                    return console.error("Error escribiendo el archivo: " + err);
-                }
-                console.log("File buffer?: " + resolve);
-            });
+    guardarArchivoProductos() {
+        const lista = this.#listaP.getProductos();
+
+        fs.writeFile(path, JSON.stringify(lista, null, 2), (err) => {
+            if (err) console.error("Error escribiendo el archivo: " + err.message);
         });
     }
-
-    /*
-    leerArchivo() {
-        console.log(path);
-        fs.access(path, fs.constants.F_OK,
-            new Promise((resolve, reject) => {
-                fs.readFile(path, fs.constants.F_OK,
-                    new Promise((resolve, reject) => {
-                        resolve("resolve en readFile");
-                        reject("reject en readFile");
-                    })
-                );
-                resolve("resolve en access");
-                reject("reject en access");
-            })
-                .then((resolve) => {
-                    console.log(resolve);
-                })
-                .catch((error) => {
-                    console.log(error);
-                })
-        )
-    }
-
-    guardarArchivo(data) {
-        fs.access(path, fs.constants.F_OK,
-            new Promise((resolve, reject) => {
-                fs.writeFile(path, JSON.stringify(data),
-                    new Promise((resolve, reject) => {
-                        resolve("resolve en writeFile");
-                        reject("reject en writeFile");
-                    })
-                );
-                resolve("resolve en access");
-                reject("reject en access");
-            })
-                .then((resolve) => {
-                    console.log(resolve);
-                })
-                .catch((error) => {
-                    console.log(error);
-                })
-        )
-    }
-        */
 }

@@ -1,7 +1,5 @@
 const fs = require('fs');
 
-import { Producto } from './producto.js';
-
 export class Factura {
     // div alta
     #camposProducto
@@ -10,14 +8,19 @@ export class Factura {
     #carrito
     #formulario
 
-    #path
+    #prodFile
+    #facFile
+    #desplegableFac
 
-    constructor(nombreProd, precioProd, lista, carrito, formulario) {
+    constructor(nombreProd, precioProd, lista, carrito, formulario, prodFile, facFile, desplegableFac) {
         this.#camposProducto = [nombreProd, precioProd];
         this.#lista_productos = lista;
         this.#carrito = carrito;
         this.#formulario = formulario;
-        this.#path = "./productos.json";
+        this.#prodFile = prodFile;
+        this.#facFile = facFile;
+        this.#desplegableFac = desplegableFac;
+
     }
 
     limpiarCampos() {
@@ -41,30 +44,30 @@ export class Factura {
             this.limpiarCampos();
 
             // guardar la lista de productos
-            this.guardarArchivoProductos();
+            this.#prodFile.guardarArchivoProductos();
         }
     }
 
-    leerArchivoProductos() {
-        // leer archivo
-        fs.readFile(this.#path, (err, buffer) => {
-            if (err) console.error("Error leyendo el archivo: " + err.message);
+    crearFactura() {
+        const factura = this.#facFile.crearFactura(this.#carrito);
+        console.log(factura);
 
-            const productos = JSON.parse(buffer.toString());
-
-            Array.from(productos).forEach(prod => {
-                this.#lista_productos.guardarProducto(new Producto(prod.nombre, prod.precio));
-            });
-
-            this.#formulario.cargarProductos(this.#lista_productos);
-        });
+        // actualizar desplegable facturas
     }
-
-    guardarArchivoProductos() {
-        const lista = this.#lista_productos.getProductos();
-
-        fs.writeFile(this.#path, JSON.stringify(lista, null, 2), (err) => {
-            if (err) console.error("Error escribiendo el archivo: " + err.message);
+    
+    
+    actualizarDesplegableFacturas(){
+        let arrayFacs = [];
+        
+        fs.glob('Factura_*.json', (err, matches) => {
+            if (err) console.error("Error buscar los archivos: " + err.message);
+            console.log(matches);
+            arrayFacs = matches;
         });
+
+        const opcion = document.createElement('option');
+        opcion.setAttribute('selected', );
+
+        // TODO: mostrar cada nombre de factura en el desplegable
     }
 }

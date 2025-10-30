@@ -1,0 +1,16 @@
+{
+  "fecha": "2025_10_30_06-36-46",
+  "total": 39.69,
+  "productos": [
+    {
+      "nombre": "Queso",
+      "precio": 6.69,
+      "cantidad": 5
+    },
+    {
+      "nombre": "Detergente",
+      "precio": 6.24,
+      "cantidad": 1
+    }
+  ]
+}

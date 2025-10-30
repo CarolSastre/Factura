@@ -38,15 +38,20 @@ export class Formulario {
     actualizarCampos(lista) {
         const nombre = this.getSelectedOptionNombre();
 
-        const producto = lista.buscarProducto(nombre);
-
         // inhabilitar 'precio' e 'importe'
         this.#campos[0].disabled = true;
         this.#campos[2].disabled = true;
 
-        // asignar valores en los campos
-        this.#campos[0].value = producto.getPrecio() +" €";
-        this.#campos[1].value = 1;
+        if (nombre === "Seleccione un producto...") {
+            this.#campos[0].value = "";
+            this.#campos[1].value = "";
+        } else {
+            const producto = lista.buscarProducto(nombre);
+
+            // asignar valores en los campos
+            this.#campos[0].value = producto.getPrecio() + " €";
+            this.#campos[1].value = 1;
+        }
 
         this.actualizarImporte();
     }
@@ -60,7 +65,7 @@ export class Formulario {
         }
     }
 
-    toJSON(){
+    toJSON() {
         return {
         }
     }

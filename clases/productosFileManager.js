@@ -6,7 +6,7 @@ import { Producto } from './producto.js';
 
 export class ProductosFileManager {
 
-    leerArchivoProductos(lista) {
+    leerArchivoProductos(campos, lista) {
         // leer archivo
         fs.readFile(path, (err, buffer) => {
             if (err) console.error("Error leyendo el archivo: " + err.message);
@@ -16,6 +16,8 @@ export class ProductosFileManager {
             Array.from(productos).forEach(prod => {
                 lista.guardarProducto(new Producto(prod.nombre, prod.precio));
             });
+
+            campos.actualizarDesplegableProductos();
         });
     }
 

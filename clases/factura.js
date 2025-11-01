@@ -46,7 +46,8 @@ export class Factura {
     }
 
     leerArchivoProductos() {
-        this.#prodFile.leerArchivoProductos(this.#campos, this.#listaProductos);
+        this.#prodFile.leerArchivoProductos(this.#listaProductos);
+        this.#campos.actualizarDesplegableProductos();
     }
 
     crearFactura() {

@@ -1,7 +1,3 @@
-const fs = require('fs');
-
-//import { Producto } from './producto.js';
-
 export class ListaProductos {
     #productos
 
@@ -11,7 +7,7 @@ export class ListaProductos {
 
     getProductos = () => this.#productos;
 
-    buscarProducto(nombre) { // buscar por nombre???
+    buscarProducto(nombre) {
         const producto = this.#productos.find(p => p.getNombre() === nombre);
         if (producto !== undefined) { return producto }
         else { return undefined }

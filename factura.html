@@ -148,17 +148,16 @@
 
         window.mostrar = mostrar;
 
-
         import { ListaProductos } from './clases/listaProductos.js';
-        import { Formulario } from './clases/formularioLinea.js';
-        import { Carrito } from './clases/carrito.js';
+        import { Campos } from './clases/campos.js';
+        import { Compra } from './clases/compra.js';
         import { Factura } from './clases/factura.js';
         import { ProductosFileManager } from './clases/productosFileManager.js';
         import { FacturaFileManager } from './clases/facturaFileManager.js';
 
         window.onload = () => {
 
-            // campos de 'añadir producto
+            // campos de 'añadir producto'
             const campoProducto = document.getElementById('producto2');
             const campoPrecio = document.getElementById('precio2');
             const botonProd = document.querySelectorAll('button.verde')[0];
@@ -182,22 +181,35 @@
             const eliminarFac = document.getElementsByClassName('btn btn-danger')[3];
 
             // instancias
-            const lista = new ListaProductos();
-            const formulario = new Formulario(desplegableProd, precio, unidades, importe);
-            const carrito = new Carrito(tabla, footer);
-            const prodFiles = new ProductosFileManager(lista, formulario);
+            const campos = new Campos(desplegableProd, precio, unidades, importe);
+            const compra = new Compra(tabla, footer);
+            const prodFiles = new ProductosFileManager(campos);
             const facturaFiles = new FacturaFileManager();
 
-            const factura = new Factura(campoProducto, campoPrecio, lista, carrito, formulario, prodFiles, facturaFiles, desplegableFac);
+            //const factura = new Factura(campoProducto, campoPrecio, lista, compra, campos, prodFiles, facturaFiles, desplegableFac);
+            const facturaManager = new Factura(
+                tabla,
+                footer,
+                campoProducto,
+                campoPrecio,
+                desplegableProd,
+                precio,
+                unidades,
+                importe,
+                desplegableFac
+            );
 
-            prodFiles.leerArchivoProductos();
+            facturaManager.leerArchivoProductos();
 
-            botonProd.addEventListener('click', () => factura.anadirProducto());
-            desplegableProd.addEventListener('change', () => formulario.actualizarCampos(lista));
-            unidades.addEventListener('input', () => formulario.actualizarImporte()); // el texto va cambiando comforme se modifica
-            botonCesta.addEventListener('click', () => carrito.anadirFila(formulario));
-            borrarCesta.addEventListener('click', () => carrito.borrarCesta());
-            crearFac.addEventListener('click', () => factura.crearFactura());
+            facturaManager.crearFactura();
+
+            botonProd.addEventListener('click', () => facturaManager.anadirProducto());
+            desplegableProd.addEventListener('change', () => facturaManager.actualizarCamposFila());
+            desplegableFac.addEventListener('change', () => facturaManager.mostrarFactura());
+            unidades.addEventListener('input', () => facturaManager.actualizarImporte());
+            botonCesta.addEventListener('click', () => facturaManager.anadirFila());
+            borrarCesta.addEventListener('click', () => facturaManager.borrarCesta());
+            crearFac.addEventListener('click', () => facturaManager.crearFactura());
         }
     </script>
 </body>

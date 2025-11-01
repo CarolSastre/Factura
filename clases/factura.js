@@ -1,73 +1,65 @@
 const fs = require('fs');
 
-export class Factura {
-    // div alta
-    #camposProducto
+import { Compra } from './compra.js';
+import { Campos } from './campos.js';
+import { ListaProductos } from './listaProductos.js';
+import { ProductosFileManager } from './productosFileManager.js';
+import { FacturaFileManager } from './facturaFileManager.js';
 
-    #lista_productos
-    #carrito
-    #formulario
+export class Factura {
+    #listaProductos
+    #compra
+    #campos
 
     #prodFile
     #facFile
-    #desplegableFac
 
-    constructor(nombreProd, precioProd, lista, carrito, formulario, prodFile, facFile, desplegableFac) {
-        this.#camposProducto = [nombreProd, precioProd];
-        this.#lista_productos = lista;
-        this.#carrito = carrito;
-        this.#formulario = formulario;
-        this.#prodFile = prodFile;
-        this.#facFile = facFile;
-        this.#desplegableFac = desplegableFac;
-
-    }
-
-    limpiarCampos() {
-        this.#camposProducto[0].value = "";
-        this.#camposProducto[1].value = "";
+    constructor(tabla, footer, nombreProd, precioProd, desplegableProd, precio, unidades, importe, desplegableFac) {
+        this.#listaProductos = new ListaProductos();
+        this.#compra = new Compra(tabla, footer);
+        this.#campos = new Campos(nombreProd, precioProd, desplegableProd, precio, unidades, importe, desplegableFac, this.#listaProductos);
+        this.#prodFile = new ProductosFileManager(this.#listaProductos);
+        this.#facFile = new FacturaFileManager();
     }
 
     anadirProducto() {
-        const nombre = this.#camposProducto[0].value;
-        const precio = Number.parseFloat(this.#camposProducto[1].value);
-
-        if (this.#lista_productos.buscarProducto(nombre) !== undefined) { // ya existe 
-            alert('El producto ya existe en la lista.');
-        } else { // no existe
-            // guarda el producto en la lista
-            this.#lista_productos.guardarProducto(new Producto(nombre, precio));
-
-            // añade el producto en el desplegable
-            this.#formulario.cargarProductos(this.#lista_productos);
-
-            this.limpiarCampos();
-
+        if (this.#campos.anadirProducto()) {
             // guardar la lista de productos
-            this.#prodFile.guardarArchivoProductos();
+            this.#prodFile.guardarArchivoProductos(this.#listaProductos);
         }
     }
 
+    anadirFila() {
+        this.#compra.anadirFila(this.#campos);
+    }
+
+    actualizarImporte() {
+        this.#campos.actualizarImporte();
+    }
+
+    actualizarCamposFila() {
+        this.#campos.actualizarCamposFila();
+    }
+
+    borrarCesta() {
+        this.#compra.borrarCesta();
+    }
+
+    leerArchivoProductos() {
+        this.#prodFile.leerArchivoProductos(this.#campos, this.#listaProductos);
+    }
+
     crearFactura() {
-        const factura = this.#facFile.crearFactura(this.#carrito);
+        const factura = this.#facFile.crearFactura(this.#compra.listarFilas(), this.#compra.getTotal());
         console.log(factura);
 
         // actualizar desplegable facturas
-    }
-    
-    
-    actualizarDesplegableFacturas(){
-        let arrayFacs = [];
+        this.#campos.actualizarDesplegableFacturas();
         
-        fs.glob('Factura_*.json', (err, matches) => {
-            if (err) console.error("Error buscar los archivos: " + err.message);
-            console.log(matches);
-            arrayFacs = matches;
-        });
+    }
 
-        const opcion = document.createElement('option');
-        opcion.setAttribute('selected', );
-
-        // TODO: mostrar cada nombre de factura en el desplegable
+    mostrarFactura(){
+        const opcion = this.#campos.getSelectedOptionFactura();
+        this.#facFile.cargarFactura(opcion, this.#compra);
     }
 }

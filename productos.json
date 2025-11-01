@@ -10,5 +10,9 @@
   {
     "nombre": "Detergente",
     "precio": 6.24
+  },
+  {
+    "nombre": "Nutella",
+    "precio": 4.3
   }
 ]

@@ -5,8 +5,15 @@ const path = "./productos.json";
 import { Producto } from './producto.js';
 
 export class ProductosFileManager {
+    #listaP
+    #form
 
-    leerArchivoProductos(campos, lista) {
+    constructor(lista_productos, formulario){
+        this.#listaP = lista_productos;
+        this.#form = formulario;
+    }
+
+    leerArchivoProductos() {
         // leer archivo
         fs.readFile(path, (err, buffer) => {
             if (err) console.error("Error leyendo el archivo: " + err.message);
@@ -14,16 +21,15 @@ export class ProductosFileManager {
             const productos = JSON.parse(buffer.toString());
 
             Array.from(productos).forEach(prod => {
-                lista.guardarProducto(new Producto(prod.nombre, prod.precio));
+                this.#listaP.guardarProducto(new Producto(prod.nombre, prod.precio));
             });
 
-            campos.actualizarDesplegableProductos();
+            this.#form.cargarProductos(this.#listaP);
         });
     }
 
-    guardarArchivoProductos(listaP) {
-        console.log(listaP);
-        const lista = listaP.getProductos();
+    guardarArchivoProductos() {
+        const lista = this.#listaP.getProductos();
 
         fs.writeFile(path, JSON.stringify(lista, null, 2), (err) => {
             if (err) console.error("Error escribiendo el archivo: " + err.message);

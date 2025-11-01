@@ -1,47 +1,27 @@
 const fs = require('fs');
 const moment = require('moment');
 
-import { DetalleProducto, Producto } from './producto.js';
+import { DetalleProducto } from './detalleProducto.js';
+import { Producto } from './producto.js';
 
 export class FacturaFileManager {
 
-    crearFactura(carrito) {
-        console.log(carrito.getTabla());
+    crearFactura(listaFilas, totalF) {
+        console.log(totalF);
+        console.log(listaFilas);
 
-        // conseguir las filas
-        const filas = carrito.getTabla().querySelectorAll('tr');
-
-        let productosC = [];
-
-        // guardar cada fila como un objeto producto y la cantidad que le corresponde
-        Array.from(filas).forEach(fila => {
-            let nombre = fila.children[0].textContent;
-            let precio = fila.children[1].textContent;
-            let cantidad = fila.children[2].textContent;
-
-            const prod = new Producto(nombre, Number.parseFloat(precio));
-
-            const detalleProd = new DetalleProducto(prod, Number.parseInt(cantidad));
-
-            productosC.push(detalleProd);
-        });
-
-        if (productosC.length !== 0) {
+        if (listaFilas.length !== 0) {
             // conseguir fecha actual
-            const fechaC = moment().format('YYYY_MM_DD_hh-mm-ss');
+            const fechaF = moment().format('YYYY_MM_DD_hh-mm-ss');
 
             // crear path del archivo
-            const path = "Factura_" + fechaC + ".json";
-
-            // guardar los datos
-
-            const totalC = carrito.getTotal();
+            const path = "Factura_" + fechaF + ".json";
 
             // guardar datos factura
             const factura = {
-                fecha: fechaC,
-                total: totalC,
-                productos: productosC.map(p => ({
+                fecha: fechaF,
+                total: totalF,
+                productos: listaFilas.map((p) => ({
                     nombre: p.getProducto().getNombre(),
                     precio: Number.parseFloat(p.getProducto().getPrecio()),
                     cantidad: Number.parseInt(p.getCantidad())
@@ -52,5 +32,35 @@ export class FacturaFileManager {
                 if (err) console.error("Error escribiendo el archivo: " + err.message);
             });
         }
+    }
+
+    cargarFactura(path, compra) {
+        fs.readFile(path, (err, buffer) => {
+            if (err) console.error("Error leyendo el archivo: " + err.message);
+
+            const factura = JSON.parse(buffer.toString());
+
+            console.log(factura);
+            const filas = factura.productos;
+            Array.from(filas).forEach((f) => {
+                // ! en productosFileManager conviertes los datos en objetos pero aquí no
+                // ! o creas la clase detalleFila o vuelves a meter todo en método crear fila aquí
+            });
+            /*
+            Array.from(productos).forEach(prod => {
+                lista.guardarProducto(new Producto(prod.nombre, prod.precio));
+            });
+
+            campos.actualizarDesplegableProductos();
+            */
+        });
+    }
+
+    modificarFactura() {
+
+    }
+
+    borrarFactura() {
+
     }
 }

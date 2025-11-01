@@ -13,7 +13,6 @@ const createWindow = () => {
   })
 
   win.loadFile('factura.html')
-  //win.loadFile('./SEGURIDAD/factura.html')
 }
 
 app.whenReady().then(() => {

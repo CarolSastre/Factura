@@ -200,8 +200,7 @@
             );
 
             facturaManager.leerArchivoProductos();
-
-            facturaManager.crearFactura();
+            facturaManager.actualizarDesplegableFacturas();
 
             botonProd.addEventListener('click', () => facturaManager.anadirProducto());
             desplegableProd.addEventListener('change', () => facturaManager.actualizarCamposFila());
@@ -210,6 +209,8 @@
             botonCesta.addEventListener('click', () => facturaManager.anadirFila());
             borrarCesta.addEventListener('click', () => facturaManager.borrarCesta());
             crearFac.addEventListener('click', () => facturaManager.crearFactura());
+            modFac.addEventListener('click', () => facturaManager.modificarFactura());
+            eliminarFac.addEventListener('click', () => facturaManager.eliminarFactura());
         }
     </script>
 </body>

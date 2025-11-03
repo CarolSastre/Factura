@@ -49,17 +49,35 @@ export class Factura {
         this.#prodFile.leerArchivoProductos(this.#campos, this.#listaProductos);
     }
 
-    crearFactura() {
-        const factura = this.#facFile.crearFactura(this.#compra.listarFilas(), this.#compra.getTotal());
-        console.log(factura);
-
-        // actualizar desplegable facturas
+    actualizarDesplegableFacturas() {
         this.#campos.actualizarDesplegableFacturas();
-        
     }
 
-    mostrarFactura(){
-        const opcion = this.#campos.getSelectedOptionFactura();
-        this.#facFile.cargarFactura(opcion, this.#compra);
+    crearFactura() {
+        this.#facFile.crearFactura(this.#compra, this.#campos);
+    }
+
+    mostrarFactura() {
+        // se asegura de borrar cualquier dato presente
+        this.#compra.borrarCesta();
+
+        const path = this.#campos.getSelectedOptionFactura();
+        this.#facFile.cargarFactura(path, this.#compra);
+    }
+
+    modificarFactura() {
+        const path = this.#campos.getSelectedOptionFactura();
+
+        if (path !== "Seleccione una factura...") {
+            this.#facFile.modificarFactura(path, this.#compra, this.#campos);
+        }
+    }
+
+    eliminarFactura() {
+        const path = this.#campos.getSelectedOptionFactura();
+
+        if (path !== "Seleccione una factura...") {
+            this.#facFile.eliminarFactura(path, this.#compra, this.#campos);
+        }
     }
 }

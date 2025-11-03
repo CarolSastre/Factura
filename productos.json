@@ -14,5 +14,13 @@
   {
     "nombre": "Nutella",
     "precio": 4.3
+  },
+  {
+    "nombre": "Mantequilla",
+    "precio": 2.5
+  },
+  {
+    "nombre": "Pan",
+    "precio": 0.9
   }
 ]

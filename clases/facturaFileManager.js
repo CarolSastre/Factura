@@ -1,18 +1,15 @@
 const fs = require('fs');
 const moment = require('moment');
 
-import { DetalleProducto } from './detalleProducto.js';
-import { Producto } from './producto.js';
-
 export class FacturaFileManager {
 
-    crearFactura(listaFilas, totalF) {
-        console.log(totalF);
-        console.log(listaFilas);
+    crearFactura(compra, campos) {
+        const listaFilas = compra.listarFilas();
 
         if (listaFilas.length !== 0) {
             // conseguir fecha actual
-            const fechaF = moment().format('YYYY_MM_DD_hh-mm-ss');
+            const fechaF = moment().format('YYYYMMDD-hhmmssa');
+            const totalF = compra.getTotal();
 
             // crear path del archivo
             const path = "Factura_" + fechaF + ".json";
@@ -30,6 +27,8 @@ export class FacturaFileManager {
 
             fs.writeFile(path, JSON.stringify(factura, null, 2), (err) => {
                 if (err) console.error("Error escribiendo el archivo: " + err.message);
+                campos.actualizarDesplegableFacturas();
+                compra.borrarCesta();
             });
         }
     }
@@ -40,27 +39,92 @@ export class FacturaFileManager {
 
             const factura = JSON.parse(buffer.toString());
 
-            console.log(factura);
             const filas = factura.productos;
             Array.from(filas).forEach((f) => {
-                // ! en productosFileManager conviertes los datos en objetos pero aquí no
-                // ! o creas la clase detalleFila o vuelves a meter todo en método crear fila aquí
-            });
-            /*
-            Array.from(productos).forEach(prod => {
-                lista.guardarProducto(new Producto(prod.nombre, prod.precio));
+                // crear nueva fila
+                let nuevaFila = document.createElement('tr');
+
+                // añadir producto
+                const celdaProd = document.createElement('td');
+                celdaProd.textContent = f.nombre;
+                nuevaFila.append(celdaProd);
+                // añadir precio
+                const celdaPre = document.createElement('td');
+                celdaPre.textContent = f.precio + " €";
+                celdaPre.setAttribute('align', 'right');
+                nuevaFila.append(celdaPre);
+                // añadir cantidad
+                const celdaCan = document.createElement('td');
+                celdaCan.textContent = f.cantidad;
+                celdaCan.setAttribute('align', 'right');
+                nuevaFila.append(celdaCan);
+
+                // añadir importe
+                const celdaImp = document.createElement('td');
+                celdaImp.textContent = Number.parseFloat(f.cantidad * f.precio).toFixed(2) + " €";
+                celdaImp.setAttribute('align', 'right');
+                nuevaFila.append(celdaImp);
+
+                // crear y añadir botón de borrar
+                const celdaB = document.createElement('td');
+                const boton = document.createElement('button');
+                boton.textContent = "X";
+                boton.setAttribute('class', 'rojo');
+                boton.setAttribute('type', 'button');
+
+                boton.onclick = (e) => {
+                    let fila = e.srcElement.parentNode.parentNode;
+
+                    fila.parentNode.removeChild(fila);
+
+                    compra.actualizarTotal();
+                }
+
+                celdaB.append(boton);
+                nuevaFila.append(celdaB);
+
+                // añadir la fila a la tabla
+                compra.getTabla().append(nuevaFila);
             });
 
-            campos.actualizarDesplegableProductos();
-            */
+            // añadir el total de la factura
+            compra.actualizarTotal();
         });
     }
 
-    modificarFactura() {
+    modificarFactura(nombre, compra, campos) {
+        const listaFilas = compra.listarFilas();
+        const totalF = compra.getTotal();
 
+        // separa el nombre del archivo de la extensión .json y de "Factura_"
+        const fechaF = nombre.split(".")[0].split("_")[1];
+
+        // guardar datos factura
+        const factura = {
+            fecha: fechaF,
+            total: totalF,
+            productos: listaFilas.map((p) => ({
+                nombre: p.getProducto().getNombre(),
+                precio: Number.parseFloat(p.getProducto().getPrecio()),
+                cantidad: Number.parseInt(p.getCantidad())
+            }))
+        }
+
+        fs.writeFile(nombre, JSON.stringify(factura, null, 2), (err) => {
+            if (err) console.error("Error reescribiendo el archivo: " + err.message);
+            campos.actualizarDesplegableFacturas();
+            compra.borrarCesta();
+        });
     }
 
-    borrarFactura() {
+    eliminarFactura(path, compra, campos) {
+        fs.rm(path, (err) => {
+            if (err) console.error("Error eliminando el archivo: " + err.message);
+            console.log("Archivo eliminado correctamente");
 
+            campos.actualizarDesplegableFacturas();
+
+            compra.borrarCesta();
+        });
     }
 }

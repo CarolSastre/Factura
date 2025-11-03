@@ -120,8 +120,6 @@ export class FacturaFileManager {
     eliminarFactura(path, compra, campos) {
         fs.rm(path, (err) => {
             if (err) console.error("Error eliminando el archivo: " + err.message);
-            console.log("Archivo eliminado correctamente");
-
             campos.actualizarDesplegableFacturas();
 
             compra.borrarCesta();

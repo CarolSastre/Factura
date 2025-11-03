@@ -22,7 +22,6 @@ export class ProductosFileManager {
     }
 
     guardarArchivoProductos(listaP) {
-        console.log(listaP);
         const lista = listaP.getProductos();
 
         fs.writeFile(path, JSON.stringify(lista, null, 2), (err) => {

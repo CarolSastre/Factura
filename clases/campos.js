@@ -64,10 +64,8 @@ export class Campos {
         fs.glob('Factura_*.json', (err, matches) => {
             if (err) console.error("Error buscar los archivos: " + err.message);
 
-            console.log("Dentro de actualizar desplegable facturas");
             this.#desplegableFac.innerHTML = "<option selected=\"selected\">Seleccione una factura...</option>";
 
-            console.log(matches);
             matches.forEach((factura) => {
                 const opcion = document.createElement('option');
                 opcion.value = factura;

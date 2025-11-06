@@ -25,70 +25,98 @@ export class FacturaFileManager {
                 }))
             }
 
+            /*
             fs.writeFile(path, JSON.stringify(factura, null, 2), (err) => {
                 if (err) console.error("Error escribiendo el archivo: " + err.message);
                 campos.actualizarDesplegableFacturas();
                 compra.borrarCesta();
+            });*/
+
+            let promesa = new Promise((resolve) => {
+                resolve(fs.writeFile(path, JSON.stringify(factura, null, 2), (err) => {
+                    if (err) console.error("Error escribiendo el archivo: " + err.message);
+                }));
+            })
+
+            promesa.then(() => {
+                console.log("Promesa resuelta");
+
+                campos.actualizarDesplegableFacturas();
+                compra.borrarCesta();
+                console.log("Factura creada correctamente");
+            }).catch((err) => {
+                console.log(err);
             });
         }
     }
 
     cargarFactura(path, compra) {
-        fs.readFile(path, (err, buffer) => {
-            if (err) console.error("Error leyendo el archivo: " + err.message);
+        compra.borrarCesta();
 
-            const factura = JSON.parse(buffer.toString());
+        let promesa = new Promise((resolve) => {
+            resolve(fs.readFile(path, (err, buffer) => {
+                if (err) console.error("Error leyendo el archivo: " + err.message);
 
-            const filas = factura.productos;
-            Array.from(filas).forEach((f) => {
-                // crear nueva fila
-                let nuevaFila = document.createElement('tr');
+                const factura = JSON.parse(buffer.toString());
 
-                // añadir producto
-                const celdaProd = document.createElement('td');
-                celdaProd.textContent = f.nombre;
-                nuevaFila.append(celdaProd);
-                // añadir precio
-                const celdaPre = document.createElement('td');
-                celdaPre.textContent = f.precio + " €";
-                celdaPre.setAttribute('align', 'right');
-                nuevaFila.append(celdaPre);
-                // añadir cantidad
-                const celdaCan = document.createElement('td');
-                celdaCan.textContent = f.cantidad;
-                celdaCan.setAttribute('align', 'right');
-                nuevaFila.append(celdaCan);
+                const filas = factura.productos;
+                Array.from(filas).forEach((f) => {
+                    // crear nueva fila
+                    let nuevaFila = document.createElement('tr');
 
-                // añadir importe
-                const celdaImp = document.createElement('td');
-                celdaImp.textContent = Number.parseFloat(f.cantidad * f.precio).toFixed(2) + " €";
-                celdaImp.setAttribute('align', 'right');
-                nuevaFila.append(celdaImp);
+                    // añadir producto
+                    const celdaProd = document.createElement('td');
+                    celdaProd.textContent = f.nombre;
+                    nuevaFila.append(celdaProd);
+                    // añadir precio
+                    const celdaPre = document.createElement('td');
+                    celdaPre.textContent = f.precio + " €";
+                    celdaPre.setAttribute('align', 'right');
+                    nuevaFila.append(celdaPre);
+                    // añadir cantidad
+                    const celdaCan = document.createElement('td');
+                    celdaCan.textContent = f.cantidad;
+                    celdaCan.setAttribute('align', 'right');
+                    nuevaFila.append(celdaCan);
 
-                // crear y añadir botón de borrar
-                const celdaB = document.createElement('td');
-                const boton = document.createElement('button');
-                boton.textContent = "X";
-                boton.setAttribute('class', 'rojo');
-                boton.setAttribute('type', 'button');
+                    // añadir importe
+                    const celdaImp = document.createElement('td');
+                    celdaImp.textContent = Number.parseFloat(f.cantidad * f.precio).toFixed(2) + " €";
+                    celdaImp.setAttribute('align', 'right');
+                    nuevaFila.append(celdaImp);
 
-                boton.onclick = (e) => {
-                    let fila = e.srcElement.parentNode.parentNode;
+                    // crear y añadir botón de borrar
+                    const celdaB = document.createElement('td');
+                    const boton = document.createElement('button');
+                    boton.textContent = "X";
+                    boton.setAttribute('class', 'rojo');
+                    boton.setAttribute('type', 'button');
 
-                    fila.parentNode.removeChild(fila);
+                    boton.onclick = (e) => {
+                        let fila = e.srcElement.parentNode.parentNode;
 
-                    compra.actualizarTotal();
-                }
+                        fila.parentNode.removeChild(fila);
 
-                celdaB.append(boton);
-                nuevaFila.append(celdaB);
+                        compra.actualizarTotal();
+                    }
 
-                // añadir la fila a la tabla
-                compra.getTabla().append(nuevaFila);
-            });
+                    celdaB.append(boton);
+                    nuevaFila.append(celdaB);
+
+                    // añadir la fila a la tabla
+                    compra.getTabla().append(nuevaFila);
+                });
+            })
+            )
+        })
+
+        promesa.then(() => {
+            console.log("Promesa resuelta");
 
             // añadir el total de la factura
             compra.actualizarTotal();
+        }).catch((err) => {
+            console.log(err);
         });
     }
 

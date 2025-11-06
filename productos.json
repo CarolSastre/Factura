@@ -22,5 +22,9 @@
   {
     "nombre": "Pan",
     "precio": 0.9
+  },
+  {
+    "nombre": "Pipas",
+    "precio": 2.36
   }
 ]

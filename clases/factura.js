@@ -1,5 +1,3 @@
-const fs = require('fs');
-
 import { Compra } from './compra.js';
 import { Campos } from './campos.js';
 import { ListaProductos } from './listaProductos.js';

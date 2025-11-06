@@ -148,12 +148,15 @@
 
         window.mostrar = mostrar;
 
+        /*
         import { ListaProductos } from './clases/listaProductos.js';
         import { Campos } from './clases/campos.js';
         import { Compra } from './clases/compra.js';
-        import { Factura } from './clases/factura.js';
         import { ProductosFileManager } from './clases/productosFileManager.js';
         import { FacturaFileManager } from './clases/facturaFileManager.js';
+        */
+
+        import { Factura } from './clases/factura.js';
 
         window.onload = () => {
 
@@ -181,10 +184,12 @@
             const eliminarFac = document.getElementsByClassName('btn btn-danger')[3];
 
             // instancias
+            /*
             const campos = new Campos(desplegableProd, precio, unidades, importe);
             const compra = new Compra(tabla, footer);
             const prodFiles = new ProductosFileManager(campos);
             const facturaFiles = new FacturaFileManager();
+            */
 
             //const factura = new Factura(campoProducto, campoPrecio, lista, compra, campos, prodFiles, facturaFiles, desplegableFac);
             const facturaManager = new Factura(

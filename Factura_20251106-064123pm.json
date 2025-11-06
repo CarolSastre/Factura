@@ -1,0 +1,11 @@
+{
+  "fecha": "20251106-064123pm",
+  "total": 66.9,
+  "productos": [
+    {
+      "nombre": "Queso",
+      "precio": 6.69,
+      "cantidad": 10
+    }
+  ]
+}

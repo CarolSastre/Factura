@@ -148,14 +148,6 @@
 
         window.mostrar = mostrar;
 
-        /*
-        import { ListaProductos } from './clases/listaProductos.js';
-        import { Campos } from './clases/campos.js';
-        import { Compra } from './clases/compra.js';
-        import { ProductosFileManager } from './clases/productosFileManager.js';
-        import { FacturaFileManager } from './clases/facturaFileManager.js';
-        */
-
         import { Factura } from './clases/factura.js';
 
         window.onload = () => {
@@ -183,16 +175,7 @@
             const modFac = document.getElementsByClassName('btn btn-danger')[2];
             const eliminarFac = document.getElementsByClassName('btn btn-danger')[3];
 
-            // instancias
-            /*
-            const campos = new Campos(desplegableProd, precio, unidades, importe);
-            const compra = new Compra(tabla, footer);
-            const prodFiles = new ProductosFileManager(campos);
-            const facturaFiles = new FacturaFileManager();
-            */
-
-            //const factura = new Factura(campoProducto, campoPrecio, lista, compra, campos, prodFiles, facturaFiles, desplegableFac);
-            const facturaManager = new Factura(
+            const factura = new Factura(
                 tabla,
                 footer,
                 campoProducto,
@@ -204,18 +187,20 @@
                 desplegableFac
             );
 
-            facturaManager.leerArchivoProductos();
-            facturaManager.actualizarDesplegableFacturas();
+            // cargar los json que existan
+            factura.leerArchivoProductos();
+            factura.actualizarDesplegableFacturas();
 
-            botonProd.addEventListener('click', () => facturaManager.anadirProducto());
-            desplegableProd.addEventListener('change', () => facturaManager.actualizarCamposFila());
-            desplegableFac.addEventListener('change', () => facturaManager.mostrarFactura());
-            unidades.addEventListener('input', () => facturaManager.actualizarImporte());
-            botonCesta.addEventListener('click', () => facturaManager.anadirFila());
-            borrarCesta.addEventListener('click', () => facturaManager.borrarCesta());
-            crearFac.addEventListener('click', () => facturaManager.crearFactura());
-            modFac.addEventListener('click', () => facturaManager.modificarFactura());
-            eliminarFac.addEventListener('click', () => facturaManager.eliminarFactura());
+            // event listeners
+            botonProd.addEventListener('click', () => factura.anadirProducto());
+            desplegableProd.addEventListener('change', () => factura.actualizarCamposFila());
+            desplegableFac.addEventListener('change', () => factura.mostrarFactura());
+            unidades.addEventListener('input', () => factura.actualizarImporte());
+            botonCesta.addEventListener('click', () => factura.anadirFila());
+            borrarCesta.addEventListener('click', () => factura.borrarCesta());
+            crearFac.addEventListener('click', () => factura.crearFactura());
+            modFac.addEventListener('click', () => factura.modificarFactura());
+            eliminarFac.addEventListener('click', () => factura.eliminarFactura());
         }
     </script>
 </body>

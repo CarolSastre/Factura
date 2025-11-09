@@ -39,8 +39,6 @@ export class FacturaFileManager {
             })
 
             promesa.then(() => {
-                console.log("Promesa resuelta");
-
                 campos.actualizarDesplegableFacturas();
                 compra.borrarCesta();
                 console.log("Factura creada correctamente");
@@ -111,10 +109,9 @@ export class FacturaFileManager {
         })
 
         promesa.then(() => {
-            console.log("Promesa resuelta");
-
             // añadir el total de la factura
             compra.actualizarTotal();
+            console.log("Factura cargada correctamente");
         }).catch((err) => {
             console.log(err);
         });
@@ -138,19 +135,38 @@ export class FacturaFileManager {
             }))
         }
 
-        fs.writeFile(nombre, JSON.stringify(factura, null, 2), (err) => {
-            if (err) console.error("Error reescribiendo el archivo: " + err.message);
+        let promesa = new Promise((resolve) => {
+            resolve(
+                fs.writeFile(nombre, JSON.stringify(factura, null, 2), (err) => {
+                    if (err) console.error("Error reescribiendo el archivo: " + err.message);
+                })
+            )
+        })
+
+        promesa.then(() => {
             campos.actualizarDesplegableFacturas();
             compra.borrarCesta();
+            console.log("Factura modificada correctamente");
+        }).catch((err) => {
+            console.log(err);
         });
     }
 
     eliminarFactura(path, compra, campos) {
-        fs.rm(path, (err) => {
-            if (err) console.error("Error eliminando el archivo: " + err.message);
-            campos.actualizarDesplegableFacturas();
+        let promesa = new Promise((resolve) => {
+            resolve(
+                fs.rm(path, (err) => {
+                    if (err) console.error("Error eliminando el archivo: " + err.message);
+                })
+            )
+        })
 
+        promesa.then(() => {
+            campos.actualizarDesplegableFacturas();
             compra.borrarCesta();
+            console.log("Factura eliminada correctamente");
+        }).catch((err) => {
+            console.log(err);
         });
     }
 }

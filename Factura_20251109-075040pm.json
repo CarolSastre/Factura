@@ -1,0 +1,16 @@
+{
+  "fecha": "20251109-075040pm",
+  "total": 133.8,
+  "productos": [
+    {
+      "nombre": "Detergente",
+      "precio": 6.24,
+      "cantidad": 20
+    },
+    {
+      "nombre": "Pan",
+      "precio": 0.9,
+      "cantidad": 10
+    }
+  ]
+}

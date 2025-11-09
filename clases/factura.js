@@ -66,6 +66,7 @@ export class Factura {
     modificarFactura() {
         const path = this.#campos.getSelectedOptionFactura();
 
+        // confirmar que se ha seleccionado una factura
         if (path !== "Seleccione una factura...") {
             this.#facFile.modificarFactura(path, this.#compra, this.#campos);
         }
@@ -74,6 +75,7 @@ export class Factura {
     eliminarFactura() {
         const path = this.#campos.getSelectedOptionFactura();
 
+        // confirmar que se ha seleccionado una factura
         if (path !== "Seleccione una factura...") {
             this.#facFile.eliminarFactura(path, this.#compra, this.#campos);
         }

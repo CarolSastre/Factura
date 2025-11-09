@@ -61,20 +61,30 @@ export class Campos {
     }
 
     actualizarDesplegableFacturas() {
-        fs.glob('Factura_*.json', (err, matches) => {
-            if (err) console.error("Error buscar los archivos: " + err.message);
+        let promesa = new Promise((resolve) => {
+            resolve(
+                fs.glob('Factura_*.json', (err, matches) => {
+                    if (err) console.error("Error buscar los archivos: " + err.message);
 
-            this.#desplegableFac.innerHTML = "<option selected=\"selected\">Seleccione una factura...</option>";
+                    this.#desplegableFac.innerHTML = "<option selected=\"selected\">Seleccione una factura...</option>";
 
-            matches.forEach((factura) => {
-                const opcion = document.createElement('option');
-                opcion.value = factura;
-                // separa el nombre del archivo de la extensión .json
-                opcion.textContent = factura.split(".")[0];
+                    matches.forEach((factura) => {
+                        const opcion = document.createElement('option');
+                        opcion.value = factura;
+                        // separa el nombre del archivo de la extensión .json
+                        opcion.textContent = factura.split(".")[0];
 
-                this.#desplegableFac.append(opcion);
-            })
-        });
+                        this.#desplegableFac.append(opcion);
+                    })
+                })
+            )
+        })
+
+        promesa.then(
+            console.log("Facturas leídas correctamente")
+        ).catch((err) => {
+            console.log(err)
+        })
     }
 
     /**

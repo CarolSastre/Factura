@@ -25,13 +25,6 @@ export class FacturaFileManager {
                 }))
             }
 
-            /*
-            fs.writeFile(path, JSON.stringify(factura, null, 2), (err) => {
-                if (err) console.error("Error escribiendo el archivo: " + err.message);
-                campos.actualizarDesplegableFacturas();
-                compra.borrarCesta();
-            });*/
-
             let promesa = new Promise((resolve) => {
                 resolve(fs.writeFile(path, JSON.stringify(factura, null, 2), (err) => {
                     if (err) console.error("Error escribiendo el archivo: " + err.message);
@@ -41,7 +34,7 @@ export class FacturaFileManager {
             promesa.then(() => {
                 campos.actualizarDesplegableFacturas();
                 compra.borrarCesta();
-                console.log("Factura creada correctamente");
+                console.log("Factura creada");
             }).catch((err) => {
                 console.log(err);
             });
@@ -111,7 +104,7 @@ export class FacturaFileManager {
         promesa.then(() => {
             // añadir el total de la factura
             compra.actualizarTotal();
-            console.log("Factura cargada correctamente");
+            console.log("Factura cargada");
         }).catch((err) => {
             console.log(err);
         });
@@ -146,7 +139,7 @@ export class FacturaFileManager {
         promesa.then(() => {
             campos.actualizarDesplegableFacturas();
             compra.borrarCesta();
-            console.log("Factura modificada correctamente");
+            console.log("Factura modificada");
         }).catch((err) => {
             console.log(err);
         });
@@ -164,7 +157,7 @@ export class FacturaFileManager {
         promesa.then(() => {
             campos.actualizarDesplegableFacturas();
             compra.borrarCesta();
-            console.log("Factura eliminada correctamente");
+            console.log("Factura eliminada");
         }).catch((err) => {
             console.log(err);
         });

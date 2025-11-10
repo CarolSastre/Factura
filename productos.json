@@ -8,10 +8,6 @@
     "precio": 3.5
   },
   {
-    "nombre": "Detergente",
-    "precio": 6.24
-  },
-  {
     "nombre": "Nutella",
     "precio": 4.3
   },
@@ -22,13 +18,5 @@
   {
     "nombre": "Pan",
     "precio": 0.9
-  },
-  {
-    "nombre": "Pipas",
-    "precio": 2.36
-  },
-  {
-    "nombre": "Agua",
-    "precio": 0.65
   }
 ]

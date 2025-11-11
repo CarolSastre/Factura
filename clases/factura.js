@@ -74,7 +74,14 @@ export class Factura {
     }
 
     actualizarDesplegableFacturas() {
-        this.#campos.actualizarDesplegableFacturas();
+        let promesa = this.#campos.actualizarDesplegableFacturas();
+
+        promesa.then((resolve) => {
+            console.log(resolve)
+        }
+        ).catch((err) => {
+            console.log(err)
+        });
     }
 
     crearFactura() {

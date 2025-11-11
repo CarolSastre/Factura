@@ -29,65 +29,62 @@ export class Compra {
         this.#footer.textContent = total.toFixed(2) + " €";
     }
 
-    anadirFila(camposF) {
-        const nombre = camposF.getSelectedOptionNombre();
+    anadirFila(nombre, campos) {
+        const fila = this.existeFila(nombre);
 
-        if (nombre !== "Seleccione un producto...") {
-            const campos = camposF.getCamposFila();
+        console.log(fila);
 
-            const fila = this.existeFila(nombre);
-            if (!fila) { // no existe
-                // crear nueva fila
-                let nuevaFila = document.createElement('tr');
+        if (!fila) { // no existe
+            // crear nueva fila
+            let nuevaFila = document.createElement('tr');
 
-                // añadir producto
-                const celdaP = document.createElement('td');
-                celdaP.textContent = nombre;
-                nuevaFila.append(celdaP);
+            // añadir producto
+            const celdaP = document.createElement('td');
+            celdaP.textContent = nombre;
+            nuevaFila.append(celdaP);
 
-                // añadir precio, unidades, importe
-                campos.forEach((campo) => {
-                    // crear celda
-                    const celda = document.createElement('td');
-                    // introducir el valor
-                    celda.textContent = campo.value;
-                    celda.setAttribute('align', 'right');
-                    // añadir a la fila
-                    nuevaFila.append(celda);
-                });
+            // añadir precio, unidades, importe
+            campos.forEach((campo) => {
+                // crear celda
+                const celda = document.createElement('td');
+                // introducir el valor
+                celda.textContent = campo.value;
+                celda.setAttribute('align', 'right');
+                // añadir a la fila
+                nuevaFila.append(celda);
+            });
 
-                // crear y añadir botón de borrar
-                const celdaB = document.createElement('td');
-                const boton = document.createElement('button');
-                boton.textContent = "X";
-                boton.setAttribute('class', 'rojo');
-                boton.setAttribute('type', 'button');
+            // crear y añadir botón de borrar
+            const celdaB = document.createElement('td');
+            const boton = document.createElement('button');
+            boton.textContent = "X";
+            boton.setAttribute('class', 'rojo');
+            boton.setAttribute('type', 'button');
 
-                boton.onclick = (e) => {
-                    let fila = e.srcElement.parentNode.parentNode;
+            boton.onclick = (e) => {
+                let fila = e.srcElement.parentNode.parentNode;
 
-                    fila.parentNode.removeChild(fila);
+                fila.parentNode.removeChild(fila);
 
-                    this.actualizarTotal();
-                }
-
-                celdaB.append(boton);
-                nuevaFila.append(celdaB);
-
-                // añadir la fila a la tabla
-                this.#tabla.append(nuevaFila);
-            } else { // existe
-                let nuevaCantidad = Number.parseInt(fila.children[2].textContent);  //cantidad
-                nuevaCantidad += Number.parseFloat(campos[1].value);
-
-                let nuevoImporte = nuevaCantidad * Number.parseFloat(campos[0].value); // importe
-
-                fila.children[2].textContent = nuevaCantidad;
-                fila.children[3].textContent = nuevoImporte.toFixed(2) + " €";
+                this.actualizarTotal();
             }
 
-            this.actualizarTotal();
+            celdaB.append(boton);
+            nuevaFila.append(celdaB);
+
+            // añadir la fila a la tabla
+            this.#tabla.append(nuevaFila);
+        } else { // existe
+            let nuevaCantidad = Number.parseInt(fila.children[2].textContent);  //cantidad
+            nuevaCantidad += Number.parseFloat(campos[1].value);
+
+            let nuevoImporte = nuevaCantidad * Number.parseFloat(campos[0].value); // importe
+
+            fila.children[2].textContent = nuevaCantidad;
+            fila.children[3].textContent = nuevoImporte.toFixed(2) + " €";
         }
+
+        this.actualizarTotal();
     }
 
     existeFila(nombre) {

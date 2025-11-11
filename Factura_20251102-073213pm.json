@@ -1,6 +1,6 @@
 {
-  "fecha": "20251102-073213",
-  "total": 55.85,
+  "fecha": "20251102-073213pm",
+  "total": 60.35,
   "productos": [
     {
       "nombre": "Queso",
@@ -10,17 +10,12 @@
     {
       "nombre": "Harina (1kg)",
       "precio": 3.5,
-      "cantidad": 2
+      "cantidad": 4
     },
     {
       "nombre": "Nutella",
       "precio": 4.3,
       "cantidad": 3
-    },
-    {
-      "nombre": "Mantequilla",
-      "precio": 2.5,
-      "cantidad": 1
     }
   ]
 }

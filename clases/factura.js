@@ -4,6 +4,8 @@ import { ListaProductos } from './listaProductos.js';
 import { ProductosFileManager } from './productosFileManager.js';
 import { FacturaFileManager } from './facturaFileManager.js';
 
+const moment = require('moment');
+
 export class Factura {
     #listaProductos
     #compra
@@ -23,12 +25,28 @@ export class Factura {
     anadirProducto() {
         if (this.#campos.anadirProducto()) {
             // guardar la lista de productos
-            this.#prodFile.guardarArchivoProductos(this.#listaProductos);
+            let promesa = this.#prodFile.guardarArchivoProductos(this.#listaProductos);
+
+            promesa.then((resolve) => {
+                console.log(resolve);
+            }
+            ).catch((err) => {
+                console.log(err);
+            })
         }
     }
 
     anadirFila() {
-        this.#compra.anadirFila(this.#campos);
+        const nombre = this.#campos.getSelectedOptionNombre();
+
+        // confirma que hay un producto seleccionado
+        if (nombre !== "Seleccione un producto...") {
+            console.log(nombre);
+
+            const campos = this.#campos.getCamposFila();
+
+            this.#compra.anadirFila(nombre, campos);
+        }
     }
 
     actualizarImporte() {
@@ -44,7 +62,15 @@ export class Factura {
     }
 
     leerArchivoProductos() {
-        this.#prodFile.leerArchivoProductos(this.#campos, this.#listaProductos);
+        let promesa = this.#prodFile.leerArchivoProductos(this.#listaProductos);
+
+        promesa.then((resolve) => {
+            this.#campos.actualizarDesplegableProductos();
+            console.log("Archivo " + resolve + " leído");
+        }
+        ).catch((err) => {
+            console.log(err)
+        })
     }
 
     actualizarDesplegableFacturas() {
@@ -52,7 +78,28 @@ export class Factura {
     }
 
     crearFactura() {
-        this.#facFile.crearFactura(this.#compra, this.#campos);
+        const listaFilas = this.#compra.listarFilas();
+
+        // confirma que la lista de la compra no esté vacía
+        if (listaFilas !== 0) {
+            // conseguir fecha actual
+            const fechaF = moment().format('YYYYMMDD-hhmmssa');
+            const totalF = this.#compra.getTotal();
+
+            // crear path del archivo
+            const path = "Factura_" + fechaF + ".json";
+
+            // envía el nombre del archivo y los datos que almacena(fecha, total de la factura y las filas)
+            let promesa = this.#facFile.escribirFactura(path, fechaF, totalF, listaFilas);
+
+            promesa.then((resolve) => {
+                this.#campos.actualizarDesplegableFacturas();
+                this.#compra.borrarCesta();
+                console.log("Archivo " + resolve + " creado");
+            }).catch((err) => {
+                console.log(err);
+            });
+        }
     }
 
     mostrarFactura() {
@@ -60,15 +107,38 @@ export class Factura {
         this.#compra.borrarCesta();
 
         const path = this.#campos.getSelectedOptionFactura();
-        this.#facFile.cargarFactura(path, this.#compra);
+        let promesa = this.#facFile.cargarFactura(path, this.#compra);
+
+        promesa.then((resolve) => {
+            this.#compra.actualizarTotal();
+            console.log("Archivo " + resolve + " cargado");
+        }).catch((err) => {
+            console.log(err);
+        });
     }
 
     modificarFactura() {
+        // utiliza el mismo nombre de la factura seleccionada
         const path = this.#campos.getSelectedOptionFactura();
 
         // confirmar que se ha seleccionado una factura
         if (path !== "Seleccione una factura...") {
-            this.#facFile.modificarFactura(path, this.#compra, this.#campos);
+            const listaFilas = this.#compra.listarFilas();
+            const totalF = this.#compra.getTotal();
+
+            // separa el nombre del archivo de la extensión .json y de "Factura_"
+            const fechaF = path.split(".")[0].split("_")[1];
+
+            // this.#facFile.modificarFactura(path, this.#compra, this.#campos);
+            let promesa = this.#facFile.escribirFactura(path, fechaF, totalF, listaFilas);
+
+            promesa.then((resolve) => {
+                this.#campos.actualizarDesplegableFacturas();
+                this.#compra.borrarCesta();
+                console.log("Archivo " + resolve + " modificado");
+            }).catch((err) => {
+                console.log(err);
+            });
         }
     }
 
@@ -77,7 +147,15 @@ export class Factura {
 
         // confirmar que se ha seleccionado una factura
         if (path !== "Seleccione una factura...") {
-            this.#facFile.eliminarFactura(path, this.#compra, this.#campos);
+            let promesa = this.#facFile.eliminarFactura(path);
+
+            promesa.then((resolve) => {
+                this.#campos.actualizarDesplegableFacturas();
+                this.#compra.borrarCesta();
+                console.log("Archivo " + resolve + " eliminado");
+            }).catch((err) => {
+                console.log(err);
+            });
         }
     }
 }

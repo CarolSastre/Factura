@@ -1,52 +1,30 @@
 const fs = require('fs');
-const moment = require('moment');
 
 export class FacturaFileManager {
 
-    crearFactura(compra, campos) {
-        const listaFilas = compra.listarFilas();
-
-        if (listaFilas.length !== 0) {
-            // conseguir fecha actual
-            const fechaF = moment().format('YYYYMMDD-hhmmssa');
-            const totalF = compra.getTotal();
-
-            // crear path del archivo
-            const path = "Factura_" + fechaF + ".json";
-
-            // guardar datos factura
-            const factura = {
-                fecha: fechaF,
-                total: totalF,
-                productos: listaFilas.map((p) => ({
-                    nombre: p.getProducto().getNombre(),
-                    precio: Number.parseFloat(p.getProducto().getPrecio()),
-                    cantidad: Number.parseInt(p.getCantidad())
-                }))
-            }
-
-            let promesa = new Promise((resolve) => {
-                resolve(fs.writeFile(path, JSON.stringify(factura, null, 2), (err) => {
-                    if (err) console.error("Error escribiendo el archivo: " + err.message);
-                }));
-            })
-
-            promesa.then(() => {
-                campos.actualizarDesplegableFacturas();
-                compra.borrarCesta();
-                console.log("Factura creada");
-            }).catch((err) => {
-                console.log(err);
-            });
+    escribirFactura(path, fechaF, totalF, listaFilas) {
+        const factura = {
+            fecha: fechaF,
+            total: totalF,
+            productos: listaFilas.map((p) => ({
+                nombre: p.getProducto().getNombre(),
+                precio: Number.parseFloat(p.getProducto().getPrecio()),
+                cantidad: Number.parseInt(p.getCantidad())
+            }))
         }
+
+        return new Promise((resolve, reject) => {
+            resolve(fs.writeFile(path, JSON.stringify(factura, null, 2), (err) => {
+                if (err) reject(new Error("Error escribiendo el archivo " + path));
+                resolve(path);
+            }));
+        });
     }
 
     cargarFactura(path, compra) {
-        compra.borrarCesta();
-
-        let promesa = new Promise((resolve) => {
-            resolve(fs.readFile(path, (err, buffer) => {
-                if (err) console.error("Error leyendo el archivo: " + err.message);
+        return new Promise((resolve, reject) => {
+            fs.readFile(path, (err, buffer) => {
+                if (err) reject(new Error("Error leyendo el archivo " + path));
 
                 const factura = JSON.parse(buffer.toString());
 
@@ -97,69 +75,18 @@ export class FacturaFileManager {
                     // añadir la fila a la tabla
                     compra.getTabla().append(nuevaFila);
                 });
+
+                resolve(path);
             })
-            )
         })
-
-        promesa.then(() => {
-            // añadir el total de la factura
-            compra.actualizarTotal();
-            console.log("Factura cargada");
-        }).catch((err) => {
-            console.log(err);
-        });
     }
 
-    modificarFactura(nombre, compra, campos) {
-        const listaFilas = compra.listarFilas();
-        const totalF = compra.getTotal();
-
-        // separa el nombre del archivo de la extensión .json y de "Factura_"
-        const fechaF = nombre.split(".")[0].split("_")[1];
-
-        // guardar datos factura
-        const factura = {
-            fecha: fechaF,
-            total: totalF,
-            productos: listaFilas.map((p) => ({
-                nombre: p.getProducto().getNombre(),
-                precio: Number.parseFloat(p.getProducto().getPrecio()),
-                cantidad: Number.parseInt(p.getCantidad())
-            }))
-        }
-
-        let promesa = new Promise((resolve) => {
-            resolve(
-                fs.writeFile(nombre, JSON.stringify(factura, null, 2), (err) => {
-                    if (err) console.error("Error reescribiendo el archivo: " + err.message);
-                })
-            )
-        })
-
-        promesa.then(() => {
-            campos.actualizarDesplegableFacturas();
-            compra.borrarCesta();
-            console.log("Factura modificada");
-        }).catch((err) => {
-            console.log(err);
-        });
-    }
-
-    eliminarFactura(path, compra, campos) {
-        let promesa = new Promise((resolve) => {
-            resolve(
-                fs.rm(path, (err) => {
-                    if (err) console.error("Error eliminando el archivo: " + err.message);
-                })
-            )
-        })
-
-        promesa.then(() => {
-            campos.actualizarDesplegableFacturas();
-            compra.borrarCesta();
-            console.log("Factura eliminada");
-        }).catch((err) => {
-            console.log(err);
+    eliminarFactura(path) {
+        return new Promise((resolve, reject) => {
+            fs.rm(path, (err) => {
+                if (err) reject(new Error("Error eliminando el archivo " + path));
+                resolve(path);
+            })
         });
     }
 }

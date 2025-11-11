@@ -8,15 +8,13 @@ export class Campos {
     #desplegableFac
     #camposProducto
     #listaProductos
-    #prodFile
 
-    constructor(nombreP, precioP, desplegableProd, precio, unidades, importe, desplegableFac, listaProductos, prodFile) {
+    constructor(nombreP, precioP, desplegableProd, precio, unidades, importe, desplegableFac, listaProductos) {
         this.#camposProducto = [nombreP, precioP];
         this.#desplegableProd = desplegableProd;
         this.#camposFila = [precio, unidades, importe];
         this.#desplegableFac = desplegableFac;
         this.#listaProductos = listaProductos;
-        this.#prodFile = prodFile;
     }
 
     getDesplegableProd = () => this.#desplegableProd;

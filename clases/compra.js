@@ -31,9 +31,7 @@ export class Compra {
 
     anadirFila(nombre, campos) {
         const fila = this.existeFila(nombre);
-
-        console.log(fila);
-
+        
         if (!fila) { // no existe
             // crear nueva fila
             let nuevaFila = document.createElement('tr');

@@ -29,7 +29,7 @@ export class ProductosFileManager {
         return new Promise((resolve, reject) => {
             fs.writeFile(path, JSON.stringify(lista, null, 2), (err) => {
                 if (err) reject(new Error("Error escribiendo el archivo " + path));
-                resolve("Archivo guardado corerectamente");
+                resolve(path);
             });
         });
     }

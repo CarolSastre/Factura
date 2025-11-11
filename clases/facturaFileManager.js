@@ -14,10 +14,10 @@ export class FacturaFileManager {
         }
 
         return new Promise((resolve, reject) => {
-            resolve(fs.writeFile(path, JSON.stringify(factura, null, 2), (err) => {
+            fs.writeFile(path, JSON.stringify(factura, null, 2), (err) => {
                 if (err) reject(new Error("Error escribiendo el archivo " + path));
                 resolve(path);
-            }));
+            });
         });
     }
 

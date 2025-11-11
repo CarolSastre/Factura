@@ -30,11 +30,15 @@ export class Campos {
         const nombre = this.#camposProducto[0].value;
         const precio = Number.parseFloat(this.#camposProducto[1].value);
 
-        if (this.#listaProductos.buscarProducto(nombre) !== undefined) { // ya existe 
+        if (this.#listaProductos.buscarProducto(nombre) !== undefined) { // el producto ya existe
             alert('El producto ya existe en la lista.');
 
             return false;
-        } else { // no existe
+        } if (isNaN(precio)) { // el precio no es válido
+            alert('El precio escrito no es un número válido.');
+
+            return false;
+        } else { // no existe y el precio es válido
             // guarda el producto en la lista
             this.#listaProductos.guardarProducto(new Producto(nombre, precio));
 
@@ -73,7 +77,7 @@ export class Campos {
 
                     this.#desplegableFac.append(opcion);
                 })
-                resolve("Fecturas leídas correctamente");
+                resolve("Facturas leídas");
             })
 
         })

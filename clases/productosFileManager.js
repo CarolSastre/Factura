@@ -9,7 +9,7 @@ export class ProductosFileManager {
     leerArchivoProductos(lista) {
         return new Promise((resolve, reject) => {
             fs.readFile(path, (err, buffer) => {
-                if (err) reject(new Error("Error leyendo el archivo " + path));
+                if (err) reject("Error leyendo el archivo " + path);
 
                 const productos = JSON.parse(buffer.toString());
 

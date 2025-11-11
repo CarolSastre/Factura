@@ -65,7 +65,8 @@ export class Campos {
     actualizarDesplegableFacturas() {
         return new Promise((resolve, reject) => {
             fs.glob('Factura_*.json', (err, matches) => {
-                if (err) reject(new Error("Error buscar los archivos 'Factura_*.json'"));
+                if (err) reject(new Error("Error buscar los archivos 'Factura_*.json'")); // si hay algún error
+                if (matches.length === 0) reject("No se ha encontrado ningún archivo 'Factura_*.json'"); // no hay facturas guardadas
 
                 this.#desplegableFac.innerHTML = "<option selected=\"selected\">Seleccione una factura...</option>";
 

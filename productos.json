@@ -18,5 +18,9 @@
   {
     "nombre": "Pan",
     "precio": 0.9
+  },
+  {
+    "nombre": "Pepe",
+    "precio": 4
   }
 ]

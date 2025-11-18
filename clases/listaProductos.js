@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Producto } from './producto.js';
 
 export class ListaProductos {
@@ -18,4 +19,24 @@ export class ListaProductos {
     guardarProducto(nombre, precio) {
         this.#productos.push(new Producto(nombre, precio));
     }
+=======
+export class ListaProductos {
+    #productos
+
+    constructor() {
+        this.#productos = [];
+    }
+
+    getProductos = () => this.#productos;
+
+    buscarProducto(nombre) {
+        const producto = this.#productos.find(p => p.getNombre() === nombre);
+        if (producto !== undefined) { return producto }
+        else { return undefined }
+    }
+
+    guardarProducto(producto) {
+        this.#productos.push(producto);
+    }
+>>>>>>> origin/main
 }

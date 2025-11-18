@@ -125,7 +125,7 @@
                 </table>
                 <div class="form-group">
                     <button type="button" class="btn btn-danger">Borrar cesta</button>
-                    <button type="button" class="btn btn-danger">Crear fatura</button>
+                    <button type="button" class="btn btn-danger">Crear factura</button>
                     <button type="button" class="btn btn-danger">Modificar factura</button>
                     <button type="button" class="btn btn-danger">Eliminar factura</button>
                 </div>
@@ -148,20 +148,11 @@
 
         window.mostrar = mostrar;
 
-
-        import { ListaProductos } from './clases/listaProductos.js';
-        import { Formulario } from './clases/formularioLinea.js';
-        import { Carrito } from './clases/carrito.js';
         import { Factura } from './clases/factura.js';
 
-        const rutaProductos = "./productos.json";
-        const fs = require('fs');
-
         window.onload = () => {
-            existeArchivo(fs, rutaProductos);
-            leerProductos(fs, rutaProductos);
 
-            // campos de 'añadir producto
+            // campos de 'añadir producto'
             const campoProducto = document.getElementById('producto2');
             const campoPrecio = document.getElementById('precio2');
             const botonProd = document.querySelectorAll('button.verde')[0];
@@ -184,48 +175,33 @@
             const modFac = document.getElementsByClassName('btn btn-danger')[2];
             const eliminarFac = document.getElementsByClassName('btn btn-danger')[3];
 
-            // instancias
-            const lista = new ListaProductos();
-            const formulario = new Formulario(desplegableProd, precio, unidades, importe);
-            const carrito = new Carrito(tabla, footer);
-            const factura = new Factura(campoProducto, campoPrecio, lista, carrito, formulario);
+            const factura = new Factura(
+                tabla,
+                footer,
+                campoProducto,
+                campoPrecio,
+                desplegableProd,
+                precio,
+                unidades,
+                importe,
+                desplegableFac
+            );
 
+            // cargar los json que existentes
+            factura.leerArchivoProductos();
+            factura.actualizarDesplegableFacturas();
+
+            // event listeners
             botonProd.addEventListener('click', () => factura.anadirProducto());
-            desplegableProd.addEventListener('change', () => formulario.actualizarCampos(lista));
-            unidades.addEventListener('input', () => formulario.actualizarImporte()); // el texto va cambiando comforme se modifica
-            botonCesta.addEventListener('click', () => carrito.anadirFila(formulario));
-            borrarCesta.addEventListener('click', () => carrito.borrarCesta());
+            desplegableProd.addEventListener('change', () => factura.actualizarCamposFila());
+            desplegableFac.addEventListener('change', () => factura.mostrarFactura());
+            unidades.addEventListener('input', () => factura.actualizarImporte());
+            botonCesta.addEventListener('click', () => factura.anadirFila());
+            borrarCesta.addEventListener('click', () => factura.borrarCesta());
+            crearFac.addEventListener('click', () => factura.crearFactura());
+            modFac.addEventListener('click', () => factura.modificarFactura());
+            eliminarFac.addEventListener('click', () => factura.eliminarFactura());
         }
-
-        function existeArchivo(fs, filePath) {
-            return new Promise((resolve, reject) => {
-                fs.access(filePath,
-                    (err) => {
-                        console.log(`${filePath} ${err ? 'does not exist' : 'exists'}`);
-                    });
-            })
-        }
-
-        // ! esto no furula
-        function leerProductos(fs, filePath) {
-            fs.open(filePath, 'r', (err, fd) => {
-                if (err) {
-                    if (err.code === 'ENOENT') {
-                        console.error(filePath + ' does not exist');
-                        return;
-                    }
-
-                    throw err;
-                }
-
-                try {
-                    fs.read(fd);
-                } catch (e) {
-                    console.log(e);
-                }
-            });
-        }
-
     </script>
 </body>
 

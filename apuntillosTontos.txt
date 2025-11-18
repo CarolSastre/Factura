@@ -1,0 +1,13 @@
+[
+    { //Factura entera
+        fecha
+        total
+        lista = [
+            { //linea producto
+                nombre
+                precio
+                cantidad
+            }
+        ]
+    }
+]

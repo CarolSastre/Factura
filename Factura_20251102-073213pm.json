@@ -1,0 +1,16 @@
+{
+  "fecha": "20251102-073213pm",
+  "total": 46.35,
+  "productos": [
+    {
+      "nombre": "Queso",
+      "precio": 6.69,
+      "cantidad": 5
+    },
+    {
+      "nombre": "Nutella",
+      "precio": 4.3,
+      "cantidad": 3
+    }
+  ]
+}

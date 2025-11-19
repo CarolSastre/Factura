@@ -4,24 +4,21 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
+    "build:macos": "electron-builder --macos --dir",
+    "dist:macos": "electron-builder --macos",
+    "build:linux": "electron-builder --linux --dir",
+    "dist:linux": "electron-builder --linux",
     "build:windows": "electron-builder --win --dir",
     "dist:windows": "electron-builder --win"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^38.4.0"
+    "electron": "^38.1.2",
+    "electron-builder": "^26.0.12"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/CarolSastre/Factura.git"
-  },
-  "bugs": {
-    "url": "https://github.com/CarolSastre/Factura/issues"
-  },
-  "homepage": "https://github.com/CarolSastre/Factura#readme",
   "dependencies": {
     "moment": "^2.30.1"
   }

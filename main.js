@@ -1,31 +1,29 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron/main')
-const path = require('node:path')
+import { Controller } from './src/controller/controller.js';
 
-async function handleFileOpen () {
-  const { canceled, filePaths } = await dialog.showOpenDialog()
-  if (!canceled) {
-    return filePaths[0]
-  }
-}
+const controller = new Controller();
 
-function createWindow () {
-  const mainWindow = new BrowserWindow({
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
-    }
-  })
-  mainWindow.loadFile('index.html')
-}
+window.onload = () => {
+         
+  // addEventListeners de la aplicacion
 
-app.whenReady().then(() => { // = app.onReady()
-   // ipcMain.handle('dialog:openFile', handleFileOpen)
+  document.getElementById("logo").addEventListener('click', () => controller.promptWindow());
+  document.getElementById("equisAltaProducto").addEventListener('click', () => controller.promptWindow());
   
-  createWindow()
-  app.on('activate', function () {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
-  })
-})
+  document.getElementById("producto").addEventListener('change', () => controller.cargarInfoProducto());
+  document.getElementById("unidades").addEventListener('change', () => controller.cargarInfoProducto());
+  
+  document.getElementById("factura").addEventListener('change', () => controller.cargarFactura()); 
 
-app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') app.quit()
-})
+  document.getElementById("btnBorrarCesta").addEventListener('click', () => controller.borraFactura(true));
+
+  document.getElementById("btnCrearFactura").addEventListener('click', () => controller.guardaFactura(0))
+  document.getElementById("btnModificarFactura").addEventListener('click', () => controller.guardaFactura(1))
+
+  document.getElementById("btnEliminarFactura").addEventListener('click', () => controller.eliminaFactura())
+
+  document.getElementById("btnAltaProducto").addEventListener('click', () => controller.altaProducto());
+  
+  document.getElementById("btnAnadirCarrito").addEventListener('click', () => controller.anyadirFilaFactura());
+  
+  controller.init();
+}

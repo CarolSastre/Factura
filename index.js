@@ -1,20 +1,25 @@
 // 1.
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const path = require('node:path')
 
-// 2.
-let window;
-
-// 3.
-app.on('ready', () => {
-  // 4.
-  window = new BrowserWindow({
-    resizable : false,
-    width: 1360 ,
-    height: 890,
-    webPreferences: { 
-     contextIsolation: false,
-     nodeIntegration: true
+function createWindow() {
+  const mainWindow = new BrowserWindow({
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js')
     }
-  });
-  window.loadFile('index.html');
+  })
+  mainWindow.loadFile('index.html')
+}
+
+app.whenReady().then(() => {
+  // ipacMain.handle()
+
+  createWindow();
+  app.on('activate', function () {
+    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+  })
+});
+
+app.on('window-all-closed', function () {
+  if (process.platform !== 'darwin') app.quit()
 });

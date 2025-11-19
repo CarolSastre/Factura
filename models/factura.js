@@ -92,7 +92,7 @@ export class Factura {
             const totalF = this.#compra.getTotal();
 
             // crear path del archivo
-            const path = "Factura_" + fechaF + ".json";
+            const path = "./facturas/Factura_" + fechaF + ".json";
 
             // envía el nombre del archivo y los datos que almacena(fecha, total de la factura y las filas)
             let promesa = this.#facFile.escribirFactura(path, fechaF, totalF, listaFilas);
@@ -112,7 +112,7 @@ export class Factura {
         this.#compra.borrarCesta();
 
         // consigue el nombre de la factura
-        const path = this.#campos.getSelectedOptionFactura();
+        const path = "./facturas/" + this.#campos.getSelectedOptionFactura();
 
         // confirma que se ha seleccionado una factura
         if (path !== "Seleccione una factura...") {
@@ -130,7 +130,7 @@ export class Factura {
 
     modificarFactura() {
         // utiliza el mismo nombre de la factura seleccionada
-        const path = this.#campos.getSelectedOptionFactura();
+        const path = "./facturas/" + this.#campos.getSelectedOptionFactura();
 
         // confirma que se ha seleccionado una factura
         if (path !== "Seleccione una factura...") {

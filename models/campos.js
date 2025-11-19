@@ -64,7 +64,7 @@ export class Campos {
 
     actualizarDesplegableFacturas() {
         return new Promise((resolve, reject) => {
-            fs.glob('Factura_*.json', (err, matches) => {
+            fs.glob('./facturas/Factura_*.json', (err, matches) => {
                 if (err) reject(new Error("Error buscar los archivos 'Factura_*.json'")); // si hay algún error
                 if (matches.length === 0) reject("No se ha encontrado ningún archivo 'Factura_*.json'"); // no hay facturas guardadas
 
@@ -73,8 +73,8 @@ export class Campos {
                 matches.forEach((factura) => {
                     const opcion = document.createElement('option');
                     opcion.value = factura;
-                    // separa el nombre del archivo de la extensión .json
-                    opcion.textContent = factura.split(".")[0];
+                    // separa el nombre del archivo de la extensión .json y del nombre de la carpeta
+                    opcion.textContent = factura.split("\\")[1].split(".")[0];
 
                     this.#desplegableFac.append(opcion);
                 })

@@ -1,0 +1,28 @@
+{
+  "name": "factura",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron .",
+    "build:windows": "electron-builder --win --dir",
+    "dist:windows": "electron-builder --win"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^38.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CarolSastre/Factura.git"
+  },
+  "bugs": {
+    "url": "https://github.com/CarolSastre/Factura/issues"
+  },
+  "homepage": "https://github.com/CarolSastre/Factura#readme",
+  "dependencies": {
+    "moment": "^2.30.1"
+  }
+}

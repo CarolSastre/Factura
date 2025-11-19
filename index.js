@@ -1,20 +1,20 @@
-// 1.
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow } = require('electron')
 
-// 2.
-let window;
+const path = require('node:path')
 
-// 3.
-app.on('ready', () => {
-  // 4.
-  window = new BrowserWindow({
-    resizable : false,
-    width: 1360 ,
-    height: 890,
-    webPreferences: { 
-     contextIsolation: false,
-     nodeIntegration: true
+const createWindow = () => {
+  const win = new BrowserWindow({
+    width: 800,
+    height: 600,
+    webPreferences: {
+      contextIsolation: false,
+      nodeIntegration: true
     }
-  });
-  window.loadFile('index.html');
-});
+  })
+
+  win.loadFile('factura.html')
+}
+
+app.whenReady().then(() => {
+  createWindow();
+})

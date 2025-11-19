@@ -60,7 +60,8 @@ export class Factura {
     }
 
     leerArchivoProductos() {
-        let promesa = this.#prodFile.leerArchivoProductos(this.#listaProductos);
+        let promesa = electronAPI.readProductosFile(this.#listaProductos);
+        //this.#prodFile.leerArchivoProductos(this.#listaProductos);
 
         promesa.then((resolve) => {
             this.#campos.actualizarDesplegableProductos();

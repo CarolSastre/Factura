@@ -1,4 +1,4 @@
-const fs = require('fs');
+//const fs = require('fs');
 
 const path = "./productos.json";
 
@@ -6,6 +6,7 @@ import { Producto } from './producto.js';
 
 export class ProductosFileManager {
 
+    /*
     leerArchivoProductos(lista) {
         return new Promise((resolve, reject) => {
             fs.readFile(path, (err, buffer) => {
@@ -22,6 +23,7 @@ export class ProductosFileManager {
 
         })
     }
+    */
 
     guardarArchivoProductos(listaP) {
         const lista = listaP.getProductos();

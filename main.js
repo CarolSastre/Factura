@@ -18,7 +18,7 @@ function createWindow () {
 }
 
 app.whenReady().then(() => { // = app.onReady()
-  ipcMain.handle('dialog:openFile', handleFileOpen) // !
+   // ipcMain.handle('dialog:openFile', handleFileOpen)
   
   createWindow()
   app.on('activate', function () {

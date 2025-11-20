@@ -129,7 +129,7 @@ export class Controller {
                             // eliminamos la fila que contiene la x donde se ha hecho click
                             elemento[0].closest('tr').remove();
                             this.#factura.eliminarArticulo(elemento[1]);
-                            // Este totalizar se ejecuta al hacer click y eliminar una fila de la factua
+                            // Este totalizar se ejecuta al hacer click y eliminar una fila de la factura
                             this.totalizar();
                         })
                     })

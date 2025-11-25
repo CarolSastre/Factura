@@ -38,9 +38,13 @@ export class Controller {
 
         this.#view.init();
 
+        /*
         if (!fs.existsSync(this.#ruta)) {
             fs.mkdirSync(this.#ruta);
         }
+        */
+        electronAPI.createDir(this.#ruta);
+        
         this.buscarFacturas();
     }
 
@@ -61,8 +65,12 @@ export class Controller {
 
     // Busca Facturas en directorio actual y carga desplegable de facturas
     buscarFacturas() {
-        this.#fileManager.buscarArchivosStartWith(this.#ruta, 'Factura_')
+        //this.#fileManager.buscarArchivosStartWith(this.#ruta, 'Factura_')
+        electronAPI.searchFilesWith(this.#ruta)
             .then((value) => {
+                value = value.filter((element) => element.startswith('Factura_')); 
+                //
+
                 this.#view.cargarFacturas(value);
             })
             .catch((error) => { console.log(error); })
@@ -162,7 +170,8 @@ export class Controller {
 
     // Elimina la factura que tenemos en pantalla
     eliminaFactura() {
-        this.#fileManager.eliminaArchivo(this.#ruta + "/" + this.#view.getSelectedFactura() + ".json")
+        //this.#fileManager.eliminaArchivo(this.#ruta + "/" + this.#view.getSelectedFactura() + ".json")
+        electronAPI.removeFile(this.#ruta + "/" + this.#view.getSelectedFactura() + ".json")
             .then(() => {
                 this.buscarFacturas();
             });

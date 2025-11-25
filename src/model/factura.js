@@ -1,5 +1,5 @@
 // const fs = require('fs')
-const moment = require('moment');
+// const moment = require('moment');
 
 import { Articulo } from './articulo.js';
 import { Producto } from './producto.js';
@@ -42,11 +42,13 @@ export class Factura {
                 arrayArticulos.push(elemento.toJSON())
             })
 
+            /*
             let path = "";
             if (accion == 0) path = ruta + "/Factura_" + moment().format("YYYYMMDD_HHmmss") + ".json";
             else path = ruta + "/" + name;
+            */
 
-            const promesa = electronAPI.writeFile(path, data);
+            const promesa = electronAPI.writeFile(accion, ruta, data);
 
             promesa.then((res) => {
                 resolve(res)

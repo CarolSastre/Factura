@@ -21,7 +21,8 @@ export class Stock {
     init() {
         // Creamos el fichero de productos vacío en caso que no exista
         return new Promise((resolve, reject) => {
-            this.#crearProductosFile()
+            //this.#crearProductosFile()
+            electronAPI.createFiles(FICHERO_PRODUCTOS)
                 .then((value) => {
                     resolve(value);
                 })
@@ -33,6 +34,7 @@ export class Stock {
 
     // Craerá el fichero de productos vacío en caso que no exista
     #crearProductosFile() {
+        /*
         return new Promise((resolve, reject) => {
             if (!fs.existsSync(FICHERO_PRODUCTOS)) {
                 fs.writeFile(FICHERO_PRODUCTOS, '[]', (err) => {
@@ -41,6 +43,7 @@ export class Stock {
                 });
             }
         });
+        */
     }
 
     // Busca los productos en el fichero FICHERO_PRODUCTOS de manera asincrona cargando el array this.#stock
@@ -87,10 +90,19 @@ export class Stock {
                 // Ordeno los productos
                 this.#stock.sort();
 
+                electronAPI.writeFile(FICHERO_PRODUCTOS, this.getStockJSON())
+                    .then((value) => {
+                        resolve(value)
+                    })
+                    .catch((err) => {
+                        reject(err)
+                    })
+                /*
                 fs.writeFile(FICHERO_PRODUCTOS, JSON.stringify(this.getStockJSON()), (err) => {
                     if (err) reject(new Error('No se ha podido guardar el producto'));
                     else resolve(this.getStockJSON());
                 })
+                */
             }
         });
     }

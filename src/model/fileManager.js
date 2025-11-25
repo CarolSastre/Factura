@@ -7,6 +7,7 @@ export class FileManager {
     }
  
     eliminaArchivo(path) {
+        /*
         return new Promise ( (resolve, reject) => {
             fs.unlink(path, (err) => {
                 if (err) reject(new Error(err));
@@ -15,11 +16,13 @@ export class FileManager {
                     console.log(path + " was deleted");
                 }
             });
-        }); 
+        });
+        */ 
     }
 
 
     buscarArchivosStartWith(dir, prefix) {
+        /*
         return new Promise ( (resolve, reject) => {
 
             fs.readdir(dir, (err, archivos) => {
@@ -29,6 +32,6 @@ export class FileManager {
                     resolve(archivos);
                 }
             })
-        })
+        })*/
     }
 }

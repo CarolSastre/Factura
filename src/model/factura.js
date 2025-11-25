@@ -105,15 +105,12 @@ export class Factura {
 
     // Lee el contenido del fichero de la factura y devuelve la lista de articulos como array de objetos JSON
     leerFactura(name) {
-        const promesa = electronAPI.readFile(name);
-
-        promesa.then((data) => {
-            JSON.parse(data).forEach((elemento) => {
-                this.anadirArticulo(elemento.descripcion, elemento.precio, elemento.unidades)
+        return electronAPI.readFile(name)
+            .then((data) => {
+                JSON.parse(data).forEach((elemento) => {
+                    this.anadirArticulo(elemento.descripcion, elemento.precio, elemento.unidades)
+                })
+                return this.getCestaJSON();
             })
-            return this.getCestaJSON();
-        }).catch((err) => {
-            return err;
-        })
     }
 }

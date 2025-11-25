@@ -43,9 +43,12 @@ export class Controller {
             fs.mkdirSync(this.#ruta);
         }
         */
-        electronAPI.createDir(this.#ruta);
-        
-        this.buscarFacturas();
+        electronAPI.createDir(this.#ruta)
+            .then((value) => {
+                console.log(value);
+                this.buscarFacturas();
+            });
+
     }
 
     getRuta() { return this.#ruta }
@@ -55,6 +58,7 @@ export class Controller {
     buscarProductos() {
         this.#stock.buscarProductos()
             .then((value) => {
+                console.log("Estás en buscarProductos" + value);
                 this.#view.cargarProductos(value);
             })
             .catch((error) => { console.log(error); })
@@ -66,9 +70,9 @@ export class Controller {
     // Busca Facturas en directorio actual y carga desplegable de facturas
     buscarFacturas() {
         //this.#fileManager.buscarArchivosStartWith(this.#ruta, 'Factura_')
-        electronAPI.searchFilesWith(this.#ruta)
+        electronAPI.searchFiles(this.#ruta)
             .then((value) => {
-                value = value.filter((element) => element.startswith('Factura_')); 
+                value = value.filter((element) => element.startsWith('Factura_'));
                 //
 
                 this.#view.cargarFacturas(value);
@@ -129,7 +133,6 @@ export class Controller {
 
             let fichero = this.#ruta + '/' + this.#view.getSelectedFactura() + ".json";
 
-            // electronAPI.readFile(fichero)
             this.#factura.leerFactura(fichero)
                 .then((value) => {
                     this.#view.generarTabla(value).forEach((elemento) => {

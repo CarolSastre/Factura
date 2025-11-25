@@ -12,3 +12,11 @@ Para ello en esta tarea tenemos que rehacer el ejercicio de la tarea 2, pero qui
 Además deberemos incorporar menus para Añadir Articulos (quitaremos el click sobre la imahen), Borrar factura de la pantalla (quitaremos el botón), Eliminar factura (quitaremos el boton), Cargar una factura buscando el fichero en el disco, ... 
 </p>
 </div>
+<code>
+window.on('close', () => {
+  if(mainWindowClose === true){
+    event.preventDefault();
+    window.hide();
+  }
+})
+</code>

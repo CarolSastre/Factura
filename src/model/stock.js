@@ -20,16 +20,9 @@ export class Stock {
 
     init() {
         // Creamos el fichero de productos vacío en caso que no exista
-        return new Promise((resolve, reject) => {
-            //this.#crearProductosFile()
-            electronAPI.createFiles(FICHERO_PRODUCTOS)
-                .then((value) => {
-                    resolve(value);
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        });
+
+        //this.#crearProductosFile()
+        return electronAPI.createProdFile();
     }
 
     // Craerá el fichero de productos vacío en caso que no exista
@@ -49,14 +42,14 @@ export class Stock {
     // Busca los productos en el fichero FICHERO_PRODUCTOS de manera asincrona cargando el array this.#stock
     buscarProductos() {
         return new Promise(async (resolve, reject) => {
-            const promesa = await electronAPI.readFile(FICHERO_PRODUCTOS);
 
-            promesa.then((data) => {
-                data.forEach((element) => {
+            electronAPI.readFile(FICHERO_PRODUCTOS)
+                .then((data) => {
+                JSON.parse(data).forEach((element) => {
                     let entry = new Producto(element.descripcion, element.precio)
                     this.#stock.push(entry)
                 })
-                resolve(this.getStockJSON());
+                resolve(this.#stock);
             }).catch((err) => {
                 reject(err);
             })

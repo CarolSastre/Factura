@@ -1,10 +1,10 @@
 const { contextBridge, ipcRenderer } = require('electron/renderer')
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  readFile: (name) => ipcRenderer.invoke('readFile', name),
-  writeFile: (name, data) => ipcRenderer.invoke('writeFile', name, data),
-  removeFile: (name) => ipcRenderer.invoke('removeFile', name),
-  searchFilesWith: (dir) => ipcRenderer.invoke('searchFilesWith', dir),
-  createProdFile: (name) => ipcRenderer.invoke('createProdFile', name),
-  createDir: (name) => ipcRenderer.invoke('createDir', name)
+  readFile: (name) => { return ipcRenderer.invoke('readFile', name) },
+  writeFile: (name, data) => { return ipcRenderer.invoke('writeFile', name, data) },
+  removeFile: (name) => { return ipcRenderer.invoke('removeFile', name) },
+  searchFiles: (dir) => { return ipcRenderer.invoke('searchFiles', dir) },
+  createProdFile: () => { return ipcRenderer.invoke('createProdFile') },
+  createDir: (name) => { return ipcRenderer.invoke('createDir', name) }
 })

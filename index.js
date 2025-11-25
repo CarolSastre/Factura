@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('node:path');
 const fs = require('fs');
+const FICHERO_PRODUCTOS = './productos.json';
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -30,28 +31,29 @@ app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit()
 });
 
-const readFile = (name) => {
+const readFile = (event, name) => {
   return new Promise((resolve, reject) => {
     if (fs.existsSync(name)) {
-      fs.readFile(name, (err, data) => {
+      fs.readFile(name, 'utf-8', (err, data) => {
         if (err) reject(new Error(err));
-        resolve(JSON.parse(data));
+        resolve(data);
       })
-    }
-    else reject(new Error(name + ' not found'));
-  })
+    } else {
+      reject(new Error(name + ' not found'))
+    };
+  });
 }
 
-const writeFile = ( path, data) => {
+const writeFile = (event, name, data) => {
   return new Promise((resolve, reject) => {
-    fs.writeFile(path, JSON.stringify(data), (err) => {
+    fs.writeFile(name, JSON.stringify(data), (err) => {
       if (err) reject(new Error(err));
       else resolve('');
     })
   })
 }
 
-const removeFile = (name) => {
+const removeFile = (event, name) => {
   return new Promise((resolve, reject) => {
     fs.unlink(name, (err) => {
       if (err) reject(new Error(err));
@@ -63,7 +65,7 @@ const removeFile = (name) => {
   });
 }
 
-const searchFiles = (dir) => {
+const searchFiles = (event, dir) => {
   return new Promise((resolve, reject) => {
 
     fs.readdir(dir, (err, archivos) => {
@@ -76,19 +78,27 @@ const searchFiles = (dir) => {
   });
 }
 
-const createProdFile = (name) => {
+const createProdFile = () => {
   return new Promise((resolve, reject) => {
-    if (!fs.existsSync(name)) {
-      fs.writeFile(name, '[]', (err) => {
-        if (err) reject(new Error('No se ha podido crear el fichero "' + name + '"'));
+    console.log(FICHERO_PRODUCTOS);
+    if (!fs.existsSync(FICHERO_PRODUCTOS)) {
+      fs.writeFile(FICHERO_PRODUCTOS, '[]', (err) => {
+        if (err) {
+          reject(new Error('No se ha podido crear el fichero ' + FICHERO_PRODUCTOS));
+          console.log("hola");
+        }
         else resolve('');
       });
     }
   });
 }
 
-const createDir = (name) => {
-  if (!fs.existsSync(name)) {
-    fs.mkdirSync(name);
-  }
+const createDir = (event, name) => {
+  return new Promise((resolve) => {
+    if (!fs.existsSync(name)) {
+      fs.mkdirSync(name);
+      resolve('Carpeta creada');
+    }
+    resolve('Carpeta encontrada')
+  })
 }

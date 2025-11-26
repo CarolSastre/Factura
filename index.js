@@ -265,6 +265,11 @@ app.on('ready', function () {
   Menu.setApplicationMenu(menu);
   createWindow();
 })
+/**
+ * 
+ * dentro de promptWindow() 
+ * crear aquí para cambiar el show a 
+ */
 
 app.on('activate', function () {
   // On OS X it's common to re-create a window in the app when the

@@ -32,7 +32,7 @@ export class Factura {
 
 
     // Recibe en accion si debe guardarse en un fichero nuevo generando el nombre (accion=0) o en el mismo fichero (accion=1), entonces el nombre viene en el campo name
-    guardarFactura(accion = 0, ruta, name = "") {
+    guardarFactura(name = "") {
 
         return new Promise((resolve, reject) => {
 
@@ -42,19 +42,19 @@ export class Factura {
                 arrayArticulos.push(elemento.toJSON())
             })
 
+            // ! --------
             /*
             let path = "";
             if (accion == 0) path = ruta + "/Factura_" + moment().format("YYYYMMDD_HHmmss") + ".json";
             else path = ruta + "/" + name;
             */
 
-            const promesa = electronAPI.writeFile(accion, ruta, data);
-
-            promesa.then((res) => {
-                resolve(res)
-            }).catch((err) => {
-                reject(err)
-            })
+            electronAPI.writeFile(name, arrayArticulos)
+                .then((res) => {
+                    resolve(res)
+                }).catch((err) => {
+                    reject(err)
+                })
         })
     }
 

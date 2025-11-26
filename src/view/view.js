@@ -73,12 +73,13 @@ export class View {
 
     // Carga el desplegable de productos a partir de un array de productos en formato JSON
     cargarProductos(productos) {
-        console.log(productos);
         this.#desplegableProducto.innerHTML = '<option>Seleccione un producto...</option>';
-        productos.forEach((elemento, index) => {
+
+        Array.from(productos).forEach((elemento, index) => {
             let option = document.createElement("option");
-            option.textContent = elemento.descripcion; // ! ?????
-            this.#desplegableProducto.add(option);
+            option.value = elemento.getDescripcion(); ////
+            option.textContent = elemento.getDescripcion(); // ! ?????
+            this.#desplegableProducto.append(option);
         })
     }
 

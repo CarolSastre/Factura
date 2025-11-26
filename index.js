@@ -1,7 +1,10 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('node:path');
 const fs = require('fs');
+const moment = require('moment');
+
 const FICHERO_PRODUCTOS = './productos.json';
+const RUTA = './facturas';
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -45,8 +48,19 @@ const readFile = (event, name) => {
 }
 
 const writeFile = (event, name, data) => {
+  console.log("Estás en writeFile " + name);
+  if (name === "") {
+    name = RUTA + "/Factura_" + moment().format("YYYYMMDD_HHmmss") + ".json";
+  }
+
   return new Promise((resolve, reject) => {
+
+    console.log("Dentro de la promesa");
+
     fs.writeFile(name, JSON.stringify(data), (err) => {
+
+      console.log("escribiendo el archivo...");
+
       if (err) reject(new Error(err));
       else resolve('');
     })
@@ -80,15 +94,13 @@ const searchFiles = (event, dir) => {
 
 const createProdFile = () => {
   return new Promise((resolve, reject) => {
-    console.log(FICHERO_PRODUCTOS);
     if (!fs.existsSync(FICHERO_PRODUCTOS)) {
       fs.writeFile(FICHERO_PRODUCTOS, '[]', (err) => {
-        if (err) {
-          reject(new Error('No se ha podido crear el fichero ' + FICHERO_PRODUCTOS));
-          console.log("hola");
-        }
+        if (err) reject(new Error('No se ha podido crear el fichero ' + FICHERO_PRODUCTOS));
         else resolve('');
       });
+    } else {
+      resolve('Se ha localizado el fichero "./productos.json"');
     }
   });
 }

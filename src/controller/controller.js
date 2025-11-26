@@ -45,7 +45,6 @@ export class Controller {
         */
         electronAPI.createDir(this.#ruta)
             .then((value) => {
-                console.log(value);
                 this.buscarFacturas();
             });
 
@@ -58,7 +57,6 @@ export class Controller {
     buscarProductos() {
         this.#stock.buscarProductos()
             .then((value) => {
-                console.log("Estás en buscarProductos" + value);
                 this.#view.cargarProductos(value);
             })
             .catch((error) => { console.log(error); })
@@ -95,7 +93,7 @@ export class Controller {
     // En el caso que no se seleccione ninguno se resetean los campos
     cargarInfoProducto() {
         let producto = this.#stock.getProductByDescripcion(this.#view.getSelectedProducto());
-        if (producto != null) this.#view.mostrarInfoProducto(producto.toJSON());
+        if (producto != null) this.#view.mostrarInfoProducto(producto.toJSON()); // !
         else this.#view.mostrarInfoProducto();
     }
 
@@ -160,7 +158,7 @@ export class Controller {
         let name = '';
         if (accion == 1) name = this.#view.getSelectedFactura() + ".json";
         if ((accion == 0) || ((name != '') && (accion == 1))) {
-            this.#factura.guardarFactura(accion, this.#ruta, name)
+            this.#factura.guardarFactura(name)
                 .then((value) => {
                     this.buscarFacturas();
                 })

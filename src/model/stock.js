@@ -22,7 +22,12 @@ export class Stock {
         // Creamos el fichero de productos vacío en caso que no exista
 
         //this.#crearProductosFile()
-        return electronAPI.createProdFile();
+        return electronAPI.createProdFile()
+            .then((value) => {
+                console.log(value);
+            }).catch((err) => {
+                console.log(err);
+            });
     }
 
     // Craerá el fichero de productos vacío en caso que no exista
@@ -44,15 +49,15 @@ export class Stock {
         return new Promise(async (resolve, reject) => {
 
             electronAPI.readFile(FICHERO_PRODUCTOS)
-                .then((data) => {
-                JSON.parse(data).forEach((element) => {
-                    let entry = new Producto(element.descripcion, element.precio)
-                    this.#stock.push(entry)
+                .then((value) => {
+                    JSON.parse(value).forEach((element) => {
+                        let entry = new Producto(element.descripcion, element.precio)
+                        this.#stock.push(entry)
+                    })
+                    resolve(this.#stock);
+                }).catch((err) => {
+                    reject(err);
                 })
-                resolve(this.#stock);
-            }).catch((err) => {
-                reject(err);
-            })
         })
     }
 

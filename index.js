@@ -1,22 +1,479 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
-const path = require('node:path');
+const { app, BrowserWindow, ipcMain, Menu, MenuItem } = require('electron')
+
 const fs = require('fs');
 const moment = require('moment');
 
 const FICHERO_PRODUCTOS = './productos.json';
 const RUTA = './facturas';
 
+const path = require('path')
+const url = require('url')
+
+
+// Keep a global reference of the window object, if you don't, the window will
+// be closed automatically when the JavaScript object is garbage collected.
+let mainWindow
+
+/////
+// Simple Menu Sample
+/////
+let template1 = [{
+  label: 'Menu 1',
+  submenu: [{
+    label: 'Menu item 1'
+  }]
+}, {
+  label: 'Menu 2',
+  submenu: [{
+    label: 'Another Menu item'
+  }, {
+    label: 'One More Menu Item'
+  }, {
+    label: 'Generate Icon',
+    click: doGenerateIcon
+  }
+  ]
+}]
+
+///////
+// Basic Edit and Window Menu sample
+///////
+let template2 = [{
+  label: 'Edit App',
+  submenu: [{
+    label: 'Undo',
+    accelerator: 'CmdOrCtrl+Z',
+    role: 'undo'
+  }, {
+    label: 'Redo',
+    accelerator: 'Shift+CmdOrCtrl+Z',
+    role: 'redo'
+  }, {
+    type: 'separator'
+  }, {
+    label: 'Cut',
+    accelerator: 'CmdOrCtrl+X',
+    role: 'cut'
+  }, {
+    label: 'Copy',
+    accelerator: 'CmdOrCtrl+C',
+    role: 'copy'
+  }, {
+    label: 'Paste',
+    accelerator: 'CmdOrCtrl+V',
+    role: 'paste'
+  }, {
+    label: 'Select All',
+    accelerator: 'CmdOrCtrl+A',
+    role: 'selectall'
+  }, {
+    type: 'separator'
+  }, {
+    label: 'My Submenu',
+    submenu: [
+      {
+        label: 'Item 1'
+      },
+      {
+        label: 'Item 2'
+      }
+    ]
+  }]
+}];
+
+let windowMenu = {
+  label: 'Window',
+  role: 'window',
+  submenu: [{
+    label: 'Minimize',
+    accelerator: 'CmdOrCtrl+M',
+    role: 'minimize'
+  }, {
+    label: 'Close',
+    accelerator: 'CmdOrCtrl+W',
+    role: 'close'
+  }, {
+    type: 'separator'
+  }, {
+    label: 'Reopen Window',
+    accelerator: 'CmdOrCtrl+Shift+T',
+    enabled: false,
+    key: 'reopenMenuItem',
+    click: function () {
+      app.emit('activate')
+    }
+  }]
+};
+
+template2.push(windowMenu);
+
+////
+//Complete Starter Sample
+/////
+let template3 = [{
+  label: 'Edit',
+  submenu: [{
+    label: 'Undo',
+    accelerator: 'CmdOrCtrl+Z',
+    role: 'undo'
+  }, {
+    label: 'Redo',
+    accelerator: 'Shift+CmdOrCtrl+Z',
+    role: 'redo'
+  }, {
+    type: 'separator'
+  }, {
+    label: 'Cut',
+    accelerator: 'CmdOrCtrl+X',
+    role: 'cut'
+  }, {
+    label: 'Copy',
+    accelerator: 'CmdOrCtrl+C',
+    role: 'copy'
+  }, {
+    label: 'Paste',
+    accelerator: 'CmdOrCtrl+V',
+    role: 'paste'
+  }, {
+    label: 'Select All',
+    accelerator: 'CmdOrCtrl+A',
+    role: 'selectall'
+  }]
+}, {
+  label: 'View',
+  submenu: [{
+    label: 'Reload',
+    accelerator: 'CmdOrCtrl+R',
+    click: function (item, focusedWindow) {
+      if (focusedWindow) {
+        // on reload, start fresh and close any old
+        // open secondary windows
+        if (focusedWindow.id === 1) {
+          BrowserWindow.getAllWindows().forEach(function (win) {
+            if (win.id > 1) {
+              win.close()
+            }
+          })
+        }
+        focusedWindow.reload()
+      }
+    }
+  }, {
+    label: 'Toggle Full Screen',
+    accelerator: (function () {
+      if (process.platform === 'darwin') {
+        return 'Ctrl+Command+F'
+      } else {
+        return 'F11'
+      }
+    })(),
+    click: function (item, focusedWindow) {
+      if (focusedWindow) {
+        focusedWindow.setFullScreen(!focusedWindow.isFullScreen())
+      }
+    }
+  }, {
+    label: 'Toggle Developer Tools',
+    accelerator: (function () {
+      if (process.platform === 'darwin') {
+        return 'Alt+Command+I'
+      } else {
+        return 'Ctrl+Shift+I'
+      }
+    })(),
+    click: function (item, focusedWindow) {
+      if (focusedWindow) {
+        focusedWindow.toggleDevTools()
+      }
+    }
+  }, {
+    type: 'separator'
+  }, {
+    label: 'My Submenu',
+    submenu: [
+      {
+        label: 'Item 1',
+        type: 'checkbox',
+        checked: true
+      }, {
+        label: 'Item 2',
+        type: 'checkbox',
+        checked: false
+      }, {
+        label: 'Item 3',
+        type: 'radio',
+        checked: true
+      }, {
+        label: 'Item 4',
+        type: 'radio',
+        checked: false
+      }]
+  }]
+}, {
+  label: 'Window',
+  role: 'window',
+  submenu: [{
+    label: 'Minimize',
+    accelerator: 'CmdOrCtrl+M',
+    role: 'minimize'
+  }, {
+    label: 'Close',
+    accelerator: 'CmdOrCtrl+W',
+    role: 'close'
+  }, {
+    type: 'separator'
+  }, {
+    label: 'Reopen Window',
+    accelerator: 'CmdOrCtrl+Shift+T',
+    enabled: false,
+    key: 'reopenMenuItem',
+    click: function () {
+      app.emit('activate')
+    }
+  }]
+}, {
+  label: 'Help',
+  role: 'help',
+  submenu: [{
+    label: 'Learn More',
+    click: function () {
+      electron.shell.openExternal('http://electron.atom.io')
+    }
+  }]
+}]
+
+template3[1].submenu.push({
+  type: 'separator'
+}, {
+  label: 'Bring All to Front',
+  role: 'front'
+})
+
+let template4 = [{
+  label: 'Edit App',
+  submenu: [{
+    label: 'Undo',
+    accelerator: 'CmdOrCtrl+Z',
+    role: 'undo'
+  }, {
+    label: 'Redo',
+    accelerator: 'Shift+CmdOrCtrl+Z',
+    role: 'redo'
+  }, {
+    type: 'separator'
+  }, {
+    label: 'Cut',
+    accelerator: 'CmdOrCtrl+X',
+    role: 'cut'
+  }, {
+    label: 'Copy',
+    accelerator: 'CmdOrCtrl+C',
+    role: 'copy'
+  }, {
+    label: 'Paste',
+    accelerator: 'CmdOrCtrl+V',
+    role: 'paste'
+  }, {
+    label: 'Select All',
+    accelerator: 'CmdOrCtrl+A',
+    role: 'selectall'
+  }, {
+    type: 'separator'
+  }, {
+    label: 'My Submenu',
+    submenu: [
+      {
+        label: 'Item 1'
+      },
+      {
+        label: 'Item 2'
+      }
+    ]
+  }]
+}, {
+  label: 'View',
+  submenu: [{
+    label: 'Reload',
+    accelerator: 'CmdOrCtrl+R',
+    click: function (item, focusedWindow) {
+      if (focusedWindow) {
+        // on reload, start fresh and close any old
+        // open secondary windows
+        if (focusedWindow.id === 1) {
+          BrowserWindow.getAllWindows().forEach(function (win) {
+            if (win.id > 1) {
+              win.close()
+            }
+          })
+        }
+        focusedWindow.reload()
+      }
+    }
+  }, {
+    label: 'Toggle Full Screen',
+    accelerator: (function () {
+      if (process.platform === 'darwin') {
+        return 'Ctrl+Command+F'
+      } else {
+        return 'F11'
+      }
+    })(),
+    click: function (item, focusedWindow) {
+      if (focusedWindow) {
+        focusedWindow.setFullScreen(!focusedWindow.isFullScreen())
+      }
+    }
+  }, {
+    label: 'Toggle Developer Tools',
+    accelerator: (function () {
+      if (process.platform === 'darwin') {
+        return 'Alt+Command+I'
+      } else {
+        return 'Ctrl+Shift+I'
+      }
+    })(),
+    click: function (item, focusedWindow) {
+      if (focusedWindow) {
+        focusedWindow.toggleDevTools()
+      }
+    }
+  }, {
+    type: 'separator'
+  }, {
+    label: 'My Submenu',
+    submenu: [
+      {
+        label: 'Item 1',
+        type: 'checkbox',
+        checked: true
+      }, {
+        label: 'Item 2',
+        type: 'checkbox',
+        checked: false
+      }, {
+        label: 'Item 3',
+        type: 'radio',
+        checked: true
+      }, {
+        label: 'Item 4',
+        type: 'radio',
+        checked: false
+      }]
+  }]
+}, {
+  label: 'Window',
+  role: 'window',
+  submenu: [{
+    label: 'Minimize',
+    accelerator: 'CmdOrCtrl+M',
+    role: 'minimize'
+  }, {
+    label: 'Close',
+    accelerator: 'CmdOrCtrl+W',
+    role: 'close'
+  }, {
+    type: 'separator'
+  }, {
+    label: 'Reopen Window',
+    accelerator: 'CmdOrCtrl+Shift+T',
+    enabled: false,
+    key: 'reopenMenuItem',
+    click: function () {
+      app.emit('activate')
+    }
+  }]
+}, {
+  label: 'Factura',
+  submenu: [{
+    label: 'Cargar Facturas'
+  }, {
+    label: 'Crear Factura'
+  }, {
+    label: 'Modificar Factura'
+  }, {
+    label: 'Borrar Factura'
+  }]
+}, {
+  label: 'Productos',
+  submenu: [{
+    label: 'Cargar Productos'
+  }, {
+    label: 'Dar producto de alta',
+    enabled: false,
+    key: 'reopenProdAlta',
+    click: function () {
+      app.emit('activate')
+    }
+  }]
+}, {
+  label: 'Help',
+  role: 'help',
+  submenu: [{
+    label: 'Learn More',
+    click: function () {
+      electron.shell.openExternal('http://electron.atom.io')
+    }
+  }]
+}]
+
+function doGenerateIcon(menuItem, browserWindow, evt) {
+  console.log(menuItem)
+  console.log(browserWindow)
+  console.log(evt)
+}
+
+/////
+//Contextual Menu
+//////
+const contextMenu = new Menu()
+contextMenu.append(new MenuItem({ label: 'Cut', role: 'cut' }))
+contextMenu.append(new MenuItem({ label: 'Copy', role: 'copy' }))
+contextMenu.append(new MenuItem({ label: 'Paste', role: 'paste' }))
+contextMenu.append(new MenuItem({ label: 'Select All', role: 'selectall' }))
+contextMenu.append(new MenuItem({ type: 'separator' }))
+contextMenu.append(new MenuItem({ label: 'Custom', click() { console.log('Custom Menu') } }))
+
+ipcMain.on('show-context-menu', function (event) {
+  const win = BrowserWindow.fromWebContents(event.sender)
+  contextMenu.popup(win)
+})
+
+
 function createWindow() {
-  const mainWindow = new BrowserWindow({
+  // Create the browser window.
+  mainWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
     }
+
+    //win.webContents.openDevTools()
   })
-  mainWindow.loadFile('index.html')
+
+  // and load the index.html of the app.
+  mainWindow.loadURL(url.format({
+    pathname: path.join(__dirname, 'index.html'),
+    protocol: 'file:',
+    slashes: true
+  }))
+
+  // Open the DevTools.
+  // mainWindow.webContents.openDevTools()
+
+  // Emitted when the window is closed.
+  mainWindow.on('closed', function () {
+    // Dereference the window object, usually you would store windows
+    // in an array if your app supports multi windows, this is the time
+    // when you should delete the corresponding element.
+    mainWindow = null
+  })
 }
 
-app.whenReady().then(() => {
-  // ipacMain.handle()
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+// Some APIs can only be used after this event occurs.
+app.on('ready', function () {
   ipcMain.handle('readFile', readFile);
   ipcMain.handle('writeFile', writeFile);
   ipcMain.handle('removeFile', removeFile);
@@ -24,15 +481,32 @@ app.whenReady().then(() => {
   ipcMain.handle('createProdFile', createProdFile);
   ipcMain.handle('createDir', createDir);
 
+  const menu = Menu.buildFromTemplate(template4);
+  Menu.setApplicationMenu(menu);
   createWindow();
-  app.on('activate', function () {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
-  })
-});
+})
 
+
+// Quit when all windows are closed.
 app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') app.quit()
-});
+  // On OS X it is common for applications and their menu bar
+  // to stay active until the user quits explicitly with Cmd + Q
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
+})
+
+app.on('activate', function () {
+  // On OS X it's common to re-create a window in the app when the
+  // dock icon is clicked and there are no other windows open.
+  if (mainWindow === null) {
+    createWindow()
+  }
+})
+
+// In this file you can include the rest of your app's specific main process
+// code. You can also put them in separate files and require them here.
+
 
 const readFile = (event, name) => {
   return new Promise((resolve, reject) => {
@@ -48,19 +522,14 @@ const readFile = (event, name) => {
 }
 
 const writeFile = (event, name, data) => {
-  console.log("Estás en writeFile " + name);
   if (name === "") {
-    name = RUTA + "/Factura_" + moment().format("YYYYMMDD_HHmmss") + ".json";
+    name = "./facturas/Factura_" + moment().format("YYYYMMDD_HHmmss") + ".json";
+  } if (!name === './productos.json') {
+    name = "./facturas" + name;
   }
 
   return new Promise((resolve, reject) => {
-
-    console.log("Dentro de la promesa");
-
     fs.writeFile(name, JSON.stringify(data), (err) => {
-
-      console.log("escribiendo el archivo...");
-
       if (err) reject(new Error(err));
       else resolve('');
     })
@@ -68,6 +537,8 @@ const writeFile = (event, name, data) => {
 }
 
 const removeFile = (event, name) => {
+  console.log(name);
+  name = "./" + name;
   return new Promise((resolve, reject) => {
     fs.unlink(name, (err) => {
       if (err) reject(new Error(err));
@@ -82,12 +553,9 @@ const removeFile = (event, name) => {
 const searchFiles = (event, dir) => {
   return new Promise((resolve, reject) => {
 
-    fs.readdir(dir, (err, archivos) => {
+    fs.readdir(RUTA, (err, archivos) => {
       if (err) reject(new Error(err));
-      else {
-        // archivos = archivos.filter(element => element.startsWith(prefix));
-        resolve(archivos);
-      }
+      resolve(archivos);
     })
   });
 }
@@ -100,7 +568,7 @@ const createProdFile = () => {
         else resolve('');
       });
     } else {
-      resolve('Se ha localizado el fichero "./productos.json"');
+      resolve('');
     }
   });
 }

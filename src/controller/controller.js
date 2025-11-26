@@ -157,13 +157,12 @@ export class Controller {
     guardaFactura(accion) {
         let name = '';
         if (accion == 1) name = this.#view.getSelectedFactura() + ".json";
-        if ((accion == 0) || ((name != '') && (accion == 1))) {
-            this.#factura.guardarFactura(name)
-                .then((value) => {
-                    this.buscarFacturas();
-                })
-            this.borraFactura(true);
-        }
+        this.#factura.guardarFactura(name)
+            .then((value) => {
+                this.buscarFacturas();
+            })
+        this.borraFactura(true);
+
     }
 
 

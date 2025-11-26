@@ -107,6 +107,7 @@ export class Factura {
     leerFactura(name) {
         return electronAPI.readFile(name)
             .then((data) => {
+                console.log(data);
                 JSON.parse(data).forEach((elemento) => {
                     this.anadirArticulo(elemento.descripcion, elemento.precio, elemento.unidades)
                 })

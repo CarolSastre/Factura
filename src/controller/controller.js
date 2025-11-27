@@ -63,11 +63,8 @@ export class Controller {
     }
 
 
-
-
     // Busca Facturas en directorio actual y carga desplegable de facturas
     buscarFacturas() {
-        //this.#fileManager.buscarArchivosStartWith(this.#ruta, 'Factura_')
         electronAPI.searchFiles(this.#ruta)
             .then((value) => {
                 value = value.filter((element) => element.startsWith('Factura_'));

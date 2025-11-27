@@ -146,7 +146,10 @@ let menuTemplate = [{
 }, {
   label: 'Factura',
   submenu: [{
-    label: 'Cargar Facturas'
+    label: 'Cargar Facturas',
+    click: function () { // ! ------------------------------------------------------
+      
+    }
   }, {
     label: 'Crear Factura'
   }, {
@@ -190,7 +193,6 @@ ipcMain.on('show-context-menu', function (event) {
   contextMenu.popup(win)
 })
 
-
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1000,
@@ -205,7 +207,7 @@ function createWindow() {
     show: false,
     width: 350,
     height: 350,
-    resizable: true, // !
+    resizable: false,
     title: "Dar de alta un producto",
     webPreferences: {
       preload: path.join(__dirname, 'preloadWindow.js')
@@ -218,14 +220,12 @@ function createWindow() {
     slashes: true
   }))
 
-  altaWindow.loadURL('https://github.com'
-    /*url.format({
+  altaWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'altaProducto.html'),
     protocol: 'file:',
     slashes: true
-  })*/
-    )
-  
+  }))
+
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
   })
@@ -254,15 +254,8 @@ app.on('ready', function () {
   Menu.setApplicationMenu(menu);
   createWindow();
 })
-/**
- * 
- * dentro de promptWindow() 
- * crear aquí para cambiar el show a 
- */
 
 app.on('activate', function () {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow()
   }
@@ -270,15 +263,10 @@ app.on('activate', function () {
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') {
     app.quit()
   }
 })
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
 
 const mostrarVentana = () => {
   if (!altaWindow.isVisible()) {
@@ -287,7 +275,6 @@ const mostrarVentana = () => {
     altaWindow.hide();
   }
 }
-
 
 const readFile = (event, name) => {
   return new Promise((resolve, reject) => {

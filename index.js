@@ -205,7 +205,7 @@ function createWindow() {
     show: false,
     width: 350,
     height: 350,
-    resizable: false,
+    resizable: true, // !
     title: "Dar de alta un producto",
     webPreferences: {
       preload: path.join(__dirname, 'preloadWindow.js')

@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html><head>
+<html>
+
+<head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <title>Factura</title>
-    <meta charset="UTF-8">    
+    <meta charset="UTF-8">
     <link href="./css/bootstrap.css" rel="stylesheet">
     <link href="./css/main.css" rel="stylesheet">
 </head>
 
 <body>
     <div class="contenedor">
+        <!--
         <h1><img id="logo" src="./images/carrito2.jpg" width="75">Carrito de la compra</h1>
         <div id="alta">
             <h1>Alta de articulo</h1>
@@ -18,6 +20,8 @@
             <p><button id="btnAltaProducto" class="verde" type="button">Añadir Producto</button></p>
             <p id="equisAltaProducto" style="text-align: right;color:red"><b>X</b></p>
         </div>
+        -->
+        <h1><img id="logo" src="./images/carrito2.jpg" width="75">Carrito de la compra</h1>
         <div style="margin:10px">
             <pre>                                  Producto                   Precio                    Unidades              Importe</pre>
             <select name="factura" id="factura">
@@ -47,7 +51,15 @@
                     <tbody>
 
                     </tbody>
-                    <tfoot id="tfoot"><tr><td></td><td></td><td>Total</td><td align="right">0.00</td><td style="width:15px"></td></tr></tfoot>
+                    <tfoot id="tfoot">
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>Total</td>
+                            <td align="right">0.00</td>
+                            <td style="width:15px"></td>
+                        </tr>
+                    </tfoot>
                 </table>
                 <div class="form-group">
                     <button id="btnBorrarCesta" type="button" class="btn">Borrar cesta</button>
@@ -61,4 +73,6 @@
     </div>
 
     <script type="module" src="main.js"></script>
-</body></html>
+</body>
+
+</html>

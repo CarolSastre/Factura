@@ -1,17 +1,12 @@
 const { app, BrowserWindow, ipcMain, Menu, MenuItem } = require('electron')
-
+const path = require('path');
+const url = require('url');
 const fs = require('fs');
 const moment = require('moment');
 
 const FICHERO_PRODUCTOS = './productos.json';
 const RUTA = './facturas';
 
-const path = require('path')
-const url = require('url')
-
-
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 let altaWindow;
 
@@ -182,9 +177,6 @@ let menuTemplate = [{
   }]
 }]
 
-/////
-//Contextual Menu
-//////
 const contextMenu = new Menu()
 contextMenu.append(new MenuItem({ label: 'Cut', role: 'cut' }))
 contextMenu.append(new MenuItem({ label: 'Copy', role: 'copy' }))
@@ -200,7 +192,6 @@ ipcMain.on('show-context-menu', function (event) {
 
 
 function createWindow() {
-  // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 1000,
     height: 800,
@@ -211,7 +202,7 @@ function createWindow() {
   })
 
   altaWindow = new BrowserWindow({
-    show: true,
+    show: false,
     width: 350,
     height: 350,
     resizable: false,
@@ -221,7 +212,6 @@ function createWindow() {
     }
   })
 
-  // and load the index.html of the app.
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
     protocol: 'file:',
@@ -233,26 +223,22 @@ function createWindow() {
     protocol: 'file:',
     slashes: true
   }))
-
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
-  // Wait for 'ready-to-show' to display our window
+  
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
   })
 
-  // Emitted when the window is closed.
   mainWindow.on('closed', function () {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
     mainWindow = null
+    altaWindow.destroy();
+  })
+
+  altaWindow.on('close', (event) => {
+    event.preventDefault();
+    altaWindow.hide();
   })
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.on('ready', function () {
   ipcMain.handle('readFile', readFile);
   ipcMain.handle('writeFile', writeFile);
@@ -260,6 +246,7 @@ app.on('ready', function () {
   ipcMain.handle('searchFiles', searchFiles);
   ipcMain.handle('createProdFile', createProdFile);
   ipcMain.handle('createDir', createDir);
+  ipcMain.handle('mostrarVentana', mostrarVentana);
 
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
@@ -290,6 +277,14 @@ app.on('window-all-closed', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+const mostrarVentana = () => {
+  if (!altaWindow.isVisible()) {
+    altaWindow.show();
+  } else {
+    altaWindow.hide();
+  }
+}
 
 
 const readFile = (event, name) => {

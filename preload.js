@@ -6,5 +6,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   removeFile: (name) => { return ipcRenderer.invoke('removeFile', name) },
   searchFiles: (dir) => { return ipcRenderer.invoke('searchFiles', dir) },
   createProdFile: () => { return ipcRenderer.invoke('createProdFile') },
-  createDir: (name) => { return ipcRenderer.invoke('createDir', name) }
+  createDir: (name) => { return ipcRenderer.invoke('createDir', name) },
+  mostrarVentana: () => { return ipcRenderer.invoke('mostrarVentana') }
 })

@@ -218,11 +218,13 @@ function createWindow() {
     slashes: true
   }))
 
-  altaWindow.loadURL(url.format({
+  altaWindow.loadURL('https://github.com'
+    /*url.format({
     pathname: path.join(__dirname, 'altaProducto.html'),
     protocol: 'file:',
     slashes: true
-  }))
+  })*/
+    )
   
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()

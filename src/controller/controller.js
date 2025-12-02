@@ -75,16 +75,10 @@ export class Controller {
             .catch((error) => { console.log(error); })
     }
 
-
-
-
     // Muestra y oculta la ventana de alta de productos llamando al metodo con el mismo nombre de la vista
     promptWindow() {
         this.#view.promptWindow();
     }
-
-
-
 
     // Carga la información del producto seleccionado del desplegable de productos
     // En el caso que no se seleccione ninguno se resetean los campos
@@ -93,8 +87,6 @@ export class Controller {
         if (producto != null) this.#view.mostrarInfoProducto(producto.toJSON()); // !
         else this.#view.mostrarInfoProducto();
     }
-
-
 
 
     // Calcula el importe total de la factura

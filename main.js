@@ -195,7 +195,7 @@ function createWindows() {
   })
 
   altaWindow = new BrowserWindow({
-    show: false,
+    show: false,  
     width: 400,
     height: 400,
     resizable: false,
@@ -242,7 +242,7 @@ app.on('ready', function () {
 
   ipcMain.handle('mostrarVentana', mostrarVentana);
 
-  ipcMain.handle('dialog:openFile', handleFileOpen);
+  ipcMain.handle('dialog:openFile', handleFileOpen); // ! -33------------------3
 
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);

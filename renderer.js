@@ -20,6 +20,6 @@ window.onload = () => {
   document.getElementById("btnEliminarFactura").addEventListener('click', () => controller.eliminaFactura())
 
   document.getElementById("btnAnadirCarrito").addEventListener('click', () => controller.anyadirFilaFactura());
-
+  
   controller.init();
 }

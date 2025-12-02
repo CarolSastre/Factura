@@ -1,4 +1,5 @@
 // const fs = require('fs')
+import { balloons, textBalloons } from "balloons-js";
 
 import { Stock } from '../model/stock.js';
 import { Factura } from '../model/factura.js';
@@ -51,7 +52,6 @@ export class Controller {
     }
 
     getRuta() { return this.#ruta }
-
 
     // Busca productos en fichero productos.json y  desplegable de produtos
     buscarProductos() {

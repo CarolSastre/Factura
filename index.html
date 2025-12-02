@@ -59,9 +59,42 @@
 
             </div>
         </div>
+        <button id="globos" type="button" class="btn">Globos</button>
     </div>
 
+    <script type="text/javascript" src="balloons.min.js"></script>
     <script type="module" src="renderer.js"></script>
+    <script type="text/javascript">
+        document.getElementById("globos").addEventListener('click', () => {
+            releaseBalloons();
+            releaseTextBalloons();
+        });
+
+        window.releaseBalloons = function () {
+            balloons();
+        };
+
+        window.releaseTextBalloons = function () {
+            textBalloons([
+                {
+                    text: "🎉 Gracias",
+                    fontSize: 100,
+                    color: "#ff69b4",
+                },
+                {
+                    text: "💻 Dani!!! 👏👏",
+                    fontSize: 90,
+                    color: "#008080",
+                },
+                {
+                    text: "🚀",
+                    fontSize: 120,
+                    color: "#000",
+                },
+            ]);
+        };
+    </script>
+
 </body>
 
 </html>

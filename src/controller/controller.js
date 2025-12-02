@@ -172,6 +172,7 @@ export class Controller {
 
     // Da de alta un nuevo producto
     altaProducto() {
+        console.log("Entrando en 'altaProducto'");
 
         // Recibimos un json con la informacion del producto descripcion y precio obtenido a partir de la vista
         let datosAlta = this.#view.getDatosAlta();

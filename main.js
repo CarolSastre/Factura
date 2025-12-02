@@ -150,23 +150,14 @@ let menuTemplate = [{
     click: function () { // ! ------------------------------------------------------
 
     }
-  }, {
-    label: 'Crear Factura'
-  }, {
-    label: 'Modificar Factura'
-  }, {
-    label: 'Borrar Factura'
   }]
 }, {
   label: 'Productos',
   submenu: [{
-    label: 'Cargar Productos'
-  }, {
     label: 'Dar producto de alta',
-    enabled: false,
     key: 'reopenProdAlta',
-    click: function () {
-      app.emit('activate')
+    click: function (event) {
+      mostrarVentana();
     }
   }]
 }, {
@@ -248,7 +239,10 @@ app.on('ready', function () {
   ipcMain.handle('searchFiles', searchFiles);
   ipcMain.handle('createProdFile', createProdFile);
   ipcMain.handle('createDir', createDir);
+
   ipcMain.handle('mostrarVentana', mostrarVentana);
+
+  ipcMain.handle('dialog:openFile', handleFileOpen);
 
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
@@ -268,9 +262,15 @@ app.on('window-all-closed', function () {
   }
 })
 
+async function handleFileOpen() {
+  const { canceled, filePaths } = await dialog.showOpenDialog()
+  if (!canceled) {
+    return filePaths[0]
+  }
+}
+
 const mostrarVentana = () => {
   if (!altaWindow.isVisible()) {
-    console.log("Mostar ventana");
     altaWindow.show();
   } else {
     altaWindow.hide();
@@ -278,6 +278,7 @@ const mostrarVentana = () => {
 }
 
 const readFile = (event, name) => {
+  console.log("Entrando en 'readFile'");
   return new Promise((resolve, reject) => {
     if (fs.existsSync(name)) {
       fs.readFile(name, 'utf-8', (err, data) => {

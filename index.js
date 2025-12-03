@@ -172,21 +172,6 @@ let menuTemplate = [{
   }]
 }]
 
-/*
-const contextMenu = new Menu()
-contextMenu.append(new MenuItem({ label: 'Cut', role: 'cut' }))
-contextMenu.append(new MenuItem({ label: 'Copy', role: 'copy' }))
-contextMenu.append(new MenuItem({ label: 'Paste', role: 'paste' }))
-contextMenu.append(new MenuItem({ label: 'Select All', role: 'selectall' }))
-contextMenu.append(new MenuItem({ type: 'separator' }))
-contextMenu.append(new MenuItem({ label: 'Custom', click() { console.log('Custom Menu') } }))
-
-ipcMain.on('show-context-menu', function (event) {
-  const win = BrowserWindow.fromWebContents(event.sender)
-  contextMenu.popup(win)
-})
-*/
-
 function createWindows() {
   mainWindow = new BrowserWindow({
     width: 1000,
@@ -242,9 +227,7 @@ app.on('ready', function () {
   ipcMain.handle('searchFiles', searchFiles);
   ipcMain.handle('createProdFile', createProdFile);
   ipcMain.handle('createDir', createDir);
-
   ipcMain.handle('mostrarVentana', mostrarVentana);
-
   ipcMain.handle('openFile', openFile);
 
   const menu = Menu.buildFromTemplate(menuTemplate);

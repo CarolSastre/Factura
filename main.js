@@ -7,9 +7,6 @@ window.onload = () => {
 
   document.getElementById("logo").addEventListener('click', () => controller.promptWindow());
 
-  document.getElementById("producto").addEventListener('change', () => controller.cargarInfoProducto());
-  document.getElementById("unidades").addEventListener('change', () => controller.cargarInfoProducto());
-
   document.getElementById("factura").addEventListener('change', () => controller.cargarFactura());
 
   document.getElementById("btnBorrarCesta").addEventListener('click', () => controller.borraFactura(true));

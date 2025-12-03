@@ -20,14 +20,17 @@ export class Stock {
 
     init() {
         // Creamos el fichero de productos vacío en caso que no exista
+        console.log("Dentro de stock.init()");
 
         //this.#crearProductosFile()
-        return electronAPI.createProdFile()
-            .then((value) => {
-                console.log(value);
-            }).catch((err) => {
-                console.log(err);
-            });
+        return new Promise((resolve, reject) => {
+            electronAPI.createProdFile()
+                .then((value) => {
+                    resolve(value);
+                }).catch((err) => {
+                    reject(err);
+                });
+        });
     }
 
     // Craerá el fichero de productos vacío en caso que no exista
@@ -50,10 +53,18 @@ export class Stock {
 
             electronAPI.readFile(FICHERO_PRODUCTOS)
                 .then((value) => {
+                    console.log("Buscar productos en stock");
+                    console.log(JSON.parse(value));
+
                     JSON.parse(value).forEach((element) => {
+                        console.log(element);
+
                         let entry = new Producto(element.descripcion, element.precio)
                         this.#stock.push(entry)
                     })
+                    
+                    console.log(this.#stock);
+
                     resolve(this.#stock);
                 }).catch((err) => {
                     reject(err);
@@ -69,6 +80,7 @@ export class Stock {
 
     // Da de alta un producto tanto en el archivo FICHERO_PRODUCTOS como en el array this.#stock a prtir de una descripción y un precio y devuelve un array de objetos JSON de todo el stock
     altaProductoInStock(descripcion, precio) {
+        console.log("       altaProductoInStock: descripcion= " + descripcion + "; precio= " + precio);
 
         return new Promise((resolve, reject) => {
 
@@ -83,11 +95,19 @@ export class Stock {
             })
 
             if (!yaExiste) {
+                console.log("       El producto no existe");
+                console.log(producto);
+
+                console.log("       stock antes: ");
+                console.log(this.getStockJSON());
+
                 this.#stock.push(producto);
 
                 // Ordeno los productos
                 this.#stock.sort();
 
+                console.log("       stock después: ");
+                console.log(this.getStockJSON());
                 electronAPI.writeFile(FICHERO_PRODUCTOS, this.getStockJSON())
                     .then((value) => {
                         resolve(value)

@@ -26,10 +26,11 @@ export class Controller {
     }
 
     // Initializing classes
-    init() {
+    async init() {
 
-        this.#stock.init()
+        await this.#stock.init()
             .then((value) => {
+                console.log(value);
                 this.buscarProductos();
             });
 
@@ -48,6 +49,7 @@ export class Controller {
                 this.buscarFacturas();
             });
 
+        console.log(this.#stock.getStockJSON());
     }
 
     getRuta() { return this.#ruta }
@@ -59,7 +61,9 @@ export class Controller {
             .then((value) => {
                 this.#view.cargarProductos(value);
             })
-            .catch((error) => { console.log(error); })
+            .catch((error) => {
+                console.log(error);
+            })
     }
 
 
@@ -172,14 +176,16 @@ export class Controller {
 
     // Da de alta un nuevo producto
     altaProducto() {
-        console.log("Entrando en 'altaProducto'");
+        console.log("   Estás en altaProdunto del controller");
 
         // Recibimos un json con la informacion del producto descripcion y precio obtenido a partir de la vista
         let datosAlta = this.#view.getDatosAlta();
+        console.log("   datosAlta: " + datosAlta);
 
         // Devuelve todo el stock de productos como array de objetos JSON
         this.#stock.altaProductoInStock(datosAlta.descripcion, datosAlta.precio)
             .then((value) => {
+                console.log("   stock de productos en el controller: " + value);
                 this.#view.cargarProductos(value);
 
                 // Quita un posible mensaje de error anterior

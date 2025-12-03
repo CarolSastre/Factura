@@ -194,14 +194,14 @@ function createWindows() {
     }
   })
 
-  altaWindow = new BrowserWindow({
+  altaWindow = new BrowserWindow({ // TODO: cambiar tamaño a 400x400 y volver no ajustable
     show: false,
-    width: 400,
-    height: 400,
-    resizable: false,
+    width: 600,
+    height: 600,
+    resizable: true,
     title: "Dar de alta un producto",
     webPreferences: {
-      preload: path.join(__dirname, 'preloadWindow.js')
+      preload: path.join(__dirname, 'preloadAlta.js')
     }
   })
 
@@ -335,10 +335,10 @@ const createProdFile = () => {
     if (!fs.existsSync(FICHERO_PRODUCTOS)) {
       fs.writeFile(FICHERO_PRODUCTOS, '[]', (err) => {
         if (err) reject(new Error('No se ha podido crear el fichero ' + FICHERO_PRODUCTOS));
-        else resolve('');
+        else resolve(FICHERO_PRODUCTOS + ' creado');
       });
     } else {
-      resolve('');
+      resolve(FICHERO_PRODUCTOS + ' encontrado');
     }
   });
 }

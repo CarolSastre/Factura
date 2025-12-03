@@ -63,15 +63,7 @@ export class View {
 
     // muestra u oculta la ventana de alta de producto
     promptWindow() {
-        /*
-        let e = document.getElementById("alta");
-        if (e.style.display == "block") {
-            e.style.display = "none"
-        } else { //si no
-            e.style.display = "block";
-        }
-            */
-           electronAPI.mostrarVentana();
+        electronAPI.mostrarVentana();
     }
 
     // Carga el desplegable de productos a partir de un array de productos en formato JSON

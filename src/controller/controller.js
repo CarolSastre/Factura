@@ -49,7 +49,7 @@ export class Controller {
                 this.buscarFacturas();
             });
 
-        console.log(this.#stock.getStockJSON());
+        console.log(this.#stock);
     }
 
     getRuta() { return this.#ruta }
@@ -117,6 +117,7 @@ export class Controller {
 
     // Carga la factura seleccionada del desplegable de facturas
     cargarFactura() {
+        console.log(this.#stock.getStockJSON());
 
         this.borraFactura(false);
 

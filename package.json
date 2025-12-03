@@ -2,7 +2,7 @@
   "name": "factura",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
+  "main": "index.js",
   "scripts": {
     "start": "electron .",
     "build:macos": "electron-builder --macos --dir",

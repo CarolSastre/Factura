@@ -6,7 +6,6 @@ const moment = require('moment');
 
 const FICHERO_PRODUCTOS = './productos.json';
 const RUTA = './facturas';
-let filePath;
 
 let mainWindow;
 let altaWindow;
@@ -230,6 +229,8 @@ app.on('ready', function () {
   ipcMain.handle('mostrarVentana', mostrarVentana);
   ipcMain.handle('openFile', openFile);
 
+  ipcMain.handle('altaProducto', altaProducto);
+
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
   createWindows();
@@ -263,8 +264,33 @@ const mostrarVentana = () => {
   }
 }
 
+const altaProducto = (event, producto) => {
+  return new Promise((resolve, reject) => {
+    // leer o crear './productos'
+    if (fs.existsSync(FICHERO_PRODUCTOS)) {
+      fs.readFile(FICHERO_PRODUCTOS, 'utf-8', (err, data) => {
+        if (err) reject(new Error(err));
+
+        let array = [];
+        JSON.parse(data).forEach((element) => {
+          array.push(element);
+        })
+        array.push(producto);
+
+        fs.writeFile(FICHERO_PRODUCTOS, JSON.stringify(array), (err) => {
+          if (err) reject(new Error(err));
+          else resolve(FICHERO_PRODUCTOS + ' modificado');
+        })
+
+        resolve(array)
+      })
+    } else {
+      reject(new Error(FICHERO_PRODUCTOS + ' not found'))
+    };
+  })
+}
+
 const readFile = (event, name) => {
-  console.log("Entrando en 'readFile'");
   return new Promise((resolve, reject) => {
     if (fs.existsSync(name)) {
       fs.readFile(name, 'utf-8', (err, data) => {

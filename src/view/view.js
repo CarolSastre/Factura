@@ -68,7 +68,7 @@ export class View {
 
     // Carga el desplegable de productos a partir de un array de productos en formato JSON
     cargarProductos(productos) {
-        console.log("       productos en el view: " + productos);
+        console.log(productos);
         this.#desplegableProducto.innerHTML = '<option>Seleccione un producto...</option>';
 
         Array.from(productos).forEach((elemento, index) => {

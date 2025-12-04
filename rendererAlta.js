@@ -1,23 +1,35 @@
-import { Controller } from './src/controller/controller.js';
+import { View } from './src/view/view.js';
 
-const controller = new Controller();
+const view = new View();
 
 window.onload = () => {
   document.getElementById("btnAltaProducto").addEventListener('click', () => {
     console.log("Hola, este es el controller de altaProducto");
 
     let producto = {
-      description: document.getElementById('productoName').value,
+      descripcion: document.getElementById('productoName').value,
       precio: document.getElementById('productoPrecio').value
     }
 
-    window.electronAPI2.writeFile('./productos.js', producto)
+    window.electronAPI2.altaProducto(producto)
       .then((value) => {
         console.log(value);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
 
+        view.cargarProductos(value);
+
+        // Quita un posible mensaje de error anterior
+        view.muestraErrorProducto('');
+      })
+      .catch((error) => {
+        view.muestraErrorProducto(error);
+      });
+
+    // Vacia campos del formulario de alta
+    vaciarCampos();
   });
+}
+
+const vaciarCampos = () => {
+  document.getElementById('productoName').value = '';
+  document.getElementById('productoPrecio').value = '';
 }

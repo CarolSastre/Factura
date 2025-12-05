@@ -177,7 +177,8 @@ function createWindows() {
     height: 800,
     title: "Factura v.3",
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true
     }
   })
 
@@ -188,7 +189,8 @@ function createWindows() {
     resizable: true,
     title: "Dar de alta un producto",
     webPreferences: {
-      preload: path.join(__dirname, 'preloadAlta.js')
+      preload: path.join(__dirname, 'preloadAlta.js'),
+      contextIsolation: true
     }
   })
 
@@ -229,7 +231,7 @@ app.on('ready', function () {
   ipcMain.handle('mostrarVentana', mostrarVentana);
   ipcMain.handle('openFile', openFile);
 
-  ipcMain.handle('altaProducto', altaProducto);
+  ipcMain.on('altaProducto', altaProducto); // ! <<<---------------------
 
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
@@ -265,7 +267,7 @@ const mostrarVentana = () => {
 }
 
 const altaProducto = (event, producto) => {
-  return new Promise((resolve, reject) => {
+  const promesa = new Promise((resolve, reject) => {
     // leer o crear './productos'
     if (fs.existsSync(FICHERO_PRODUCTOS)) {
       fs.readFile(FICHERO_PRODUCTOS, 'utf-8', (err, data) => {
@@ -287,7 +289,18 @@ const altaProducto = (event, producto) => {
     } else {
       reject(new Error(FICHERO_PRODUCTOS + ' not found'))
     };
+  });
+
+  promesa.then((value) => {
+    if (mainWindow) {
+      mainWindow.webContents.send('data-to-main', value);
+    }
   })
+    .catch((err) => {
+      if (mainWindow) {
+        mainWindow.webContents.send('data-to-main', err);
+      }
+    })
 }
 
 const readFile = (event, name) => {
@@ -319,14 +332,12 @@ const writeFile = (event, name, data) => {
 }
 
 const removeFile = (event, name) => {
-  console.log(name);
   name = "./" + name;
   return new Promise((resolve, reject) => {
     fs.unlink(name, (err) => {
       if (err) reject(new Error(err));
       else {
-        console.log(name + " was deleted");
-        resolve('');
+        resolve(name + " was deleted");
       }
     });
   });

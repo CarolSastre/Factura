@@ -20,3 +20,7 @@ window.onload = () => {
 
   controller.init();
 }
+
+window.electronAPI.onData((data) => {
+  controller.buscarProductos(data);
+})

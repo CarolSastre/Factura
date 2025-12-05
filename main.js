@@ -293,12 +293,12 @@ const altaProducto = (event, producto) => {
 
   promesa.then((value) => {
     if (mainWindow) {
-      mainWindow.webContents.send('data-to-main', value);
+      mainWindow.webContents.send('getAltaProducto', value);
     }
   })
     .catch((err) => {
       if (mainWindow) {
-        mainWindow.webContents.send('data-to-main', err);
+        mainWindow.webContents.send('getAltaProducto', err);
       }
     })
 }

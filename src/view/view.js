@@ -52,7 +52,7 @@ export class View {
 
     // función que muestra un mensaje en la ventana de alta de producto
     muestraErrorProducto(error) {
-        document.getElementById("error").textContent = error;
+        document.getElementById("error").textContent = error; // TODO: mandar a la ventana secundaria
     }
 
     // Vaciamos las cajas de nombre y precio del producto en el alta

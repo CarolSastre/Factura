@@ -171,20 +171,19 @@ export class Controller {
 
 
     // Da de alta un nuevo producto
-    altaProducto() {
-        // Recibimos un json con la informacion del producto descripcion y precio obtenido a partir de la vista
-        let datosAlta = this.#view.getDatosAlta();
+    altaProducto(producto) {
         
         // Devuelve todo el stock de productos como array de objetos JSON
-        this.#stock.altaProductoInStock(datosAlta.descripcion, datosAlta.precio)
+        this.#stock.altaProductoInStock(producto.descripcion, producto.precio)
             .then((value) => {
                 this.#view.cargarProductos(value);
 
                 // Quita un posible mensaje de error anterior
-                this.#view.muestraErrorProducto('');
+                //this.#view.muestraErrorProducto('');
             })
             .catch((error) => {
-                this.#view.muestraErrorProducto(error);
+                console.log(error);
+                //this.#view.muestraErrorProducto(error);
             });
 
         // Vacia campos del formulario de alta

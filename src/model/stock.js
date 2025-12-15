@@ -82,7 +82,7 @@ export class Stock {
                     reject(new Error('El producto ' + descripcion + ' ya existe'))
                 }
             })
-
+            
             if (!yaExiste) {
                 this.#stock.push(producto);
 
@@ -90,17 +90,11 @@ export class Stock {
                 this.#stock.sort();
                 electronAPI.writeFile(FICHERO_PRODUCTOS, this.getStockJSON())
                     .then((value) => {
-                        resolve(value)
+                        resolve(this.getStock())
                     })
                     .catch((err) => {
                         reject(err)
                     })
-                /*
-                fs.writeFile(FICHERO_PRODUCTOS, JSON.stringify(this.getStockJSON()), (err) => {
-                    if (err) reject(new Error('No se ha podido guardar el producto'));
-                    else resolve(this.getStockJSON());
-                })
-                */
             }
         });
     }

@@ -231,7 +231,7 @@ app.on('ready', function () {
   ipcMain.handle('mostrarVentana', mostrarVentana);
   ipcMain.handle('openFile', openFile);
 
-  ipcMain.on('altaProducto', altaProducto); // ! <<<---------------------
+  ipcMain.on('anadirProducto', anadirProducto); // ! <<<---------------------
 
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
@@ -266,41 +266,17 @@ const mostrarVentana = () => {
   }
 }
 
-const altaProducto = (event, producto) => {
-  const promesa = new Promise((resolve, reject) => {
-    // leer o crear './productos'
-    if (fs.existsSync(FICHERO_PRODUCTOS)) {
-      fs.readFile(FICHERO_PRODUCTOS, 'utf-8', (err, data) => {
-        if (err) reject(new Error(err));
+/*
+const sendStock = (event, datos) => {
+  mainWindow.webContents.send('sendStock', datos); // ! <<<----------- Esto envía a la mainWindow o la altaProductos ????
+}
+*/
 
-        let array = [];
-        JSON.parse(data).forEach((element) => {
-          array.push(element);
-        })
-        array.push(producto);
+const anadirProducto = (event, producto) => {
+  console.log("main > anadirProducto");
 
-        fs.writeFile(FICHERO_PRODUCTOS, JSON.stringify(array), (err) => {
-          if (err) reject(new Error(err));
-          else resolve(FICHERO_PRODUCTOS + ' modificado');
-        })
+  mainWindow.webContents.send('getAltaProducto', producto);
 
-        resolve(array)
-      })
-    } else {
-      reject(new Error(FICHERO_PRODUCTOS + ' not found'))
-    };
-  });
-
-  promesa.then((value) => {
-    if (mainWindow) {
-      mainWindow.webContents.send('getAltaProducto', value);
-    }
-  })
-    .catch((err) => {
-      if (mainWindow) {
-        mainWindow.webContents.send('getAltaProducto', err);
-      }
-    })
 }
 
 const readFile = (event, name) => {
@@ -322,11 +298,12 @@ const writeFile = (event, name, data) => {
   } if (!name === './productos.json') {
     name = "./facturas" + name;
   }
+  console.log(data);
 
   return new Promise((resolve, reject) => {
     fs.writeFile(name, JSON.stringify(data), (err) => {
       if (err) reject(new Error(err));
-      else resolve('');
+      resolve('');
     })
   })
 }

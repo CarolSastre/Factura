@@ -8,14 +8,8 @@ window.onload = () => {
       descripcion: document.getElementById('productoName').value,
       precio: document.getElementById('productoPrecio').value
     }
-
-    window.electronAPI2.altaProducto(producto);
-//      .then((value) => {
-//        console.log(value);
-//      })
-//      .catch((error) => {
-//        view.muestraErrorProducto(error);
-//      });
+    
+    window.electronAPI2.anadirProducto(producto);
 
     // Vacia campos del formulario de alta
     vaciarCampos();

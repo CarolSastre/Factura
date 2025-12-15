@@ -21,6 +21,6 @@ window.onload = () => {
   controller.init();
 }
 
-window.electronAPI.getAltaProducto((data) => {
-  controller.buscarProductos(data);
+window.electronAPI.getAltaProducto((event, producto) => {
+  controller.altaProducto(producto);
 })

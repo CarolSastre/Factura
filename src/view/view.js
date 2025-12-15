@@ -41,7 +41,7 @@ export class View {
         else {
             this.#btnModificarFactura.removeAttribute('disabled');
             this.#btnEliminarFactura.removeAttribute('disabled');
-            return this.#desplegableFactura.options[this.#desplegableFactura.selectedIndex].textContent;
+            return "./facturas/" + this.#desplegableFactura.options[this.#desplegableFactura.selectedIndex].textContent; // ! <-----------------
         }
     }
 
@@ -90,6 +90,7 @@ export class View {
 
     // Muestra la información de un producto seleccionado, se la pasa el precio del producto cogido por el controlador del modelo
     mostrarInfoProducto(producto) {
+
         if (this.#desplegableProducto.selectedIndex == 0) {
             document.getElementById("precio").value = '';
             document.getElementById("importe").value = '';

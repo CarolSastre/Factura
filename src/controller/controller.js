@@ -50,7 +50,8 @@ export class Controller {
     }
 
     getRuta() { return this.#ruta }
-
+    getFactura() { return this.#factura }
+    getView() { return this.#view }
 
     // Busca productos en fichero productos.json y  desplegable de produtos
     buscarProductos() {
@@ -118,7 +119,7 @@ export class Controller {
 
         if (this.#view.getSelectedFactura() != '') {
 
-            let fichero = this.#ruta + '/' + this.#view.getSelectedFactura() + ".json";
+            let fichero = this.#view.getSelectedFactura() + ".json";
 
             this.#factura.leerFactura(fichero)
                 .then((value) => {
@@ -159,8 +160,7 @@ export class Controller {
 
     // Elimina la factura que tenemos en pantalla
     eliminaFactura() {
-        //this.#fileManager.eliminaArchivo(this.#ruta + "/" + this.#view.getSelectedFactura() + ".json")
-        electronAPI.removeFile(this.#ruta + "/" + this.#view.getSelectedFactura() + ".json")
+        electronAPI.removeFile(this.#view.getSelectedFactura() + ".json")
             .then(() => {
                 this.buscarFacturas();
             });
@@ -172,7 +172,7 @@ export class Controller {
 
     // Da de alta un nuevo producto
     altaProducto(producto) {
-        
+
         // Devuelve todo el stock de productos como array de objetos JSON
         this.#stock.altaProductoInStock(producto.descripcion, producto.precio)
             .then((value) => {

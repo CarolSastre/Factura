@@ -147,8 +147,10 @@ let menuTemplate = [{
   label: 'Factura',
   submenu: [{
     label: 'Cargar Factura',
-    click: async () => { // ! ------------------------------------------------------
+    click: async () => {
       const filePath = await openFile();
+      console.log(filePath);
+      mainWindow.webContents.send('mandar_principal', filePath);
     }
   }]
 }, {
@@ -182,11 +184,11 @@ function createWindows() {
     }
   })
 
-  altaWindow = new BrowserWindow({ // TODO: cambiar tamaño a 400x400 y volver no ajustable
+  altaWindow = new BrowserWindow({
     show: false,
-    width: 600,
-    height: 600,
-    resizable: true,
+    width: 400,
+    height: 400,
+    resizable: false,
     title: "Dar de alta un producto",
     webPreferences: {
       preload: path.join(__dirname, 'preloadAlta.js'),
@@ -229,9 +231,10 @@ app.on('ready', function () {
   ipcMain.handle('createProdFile', createProdFile);
   ipcMain.handle('createDir', createDir);
   ipcMain.handle('mostrarVentana', mostrarVentana);
-  ipcMain.handle('openFile', openFile);
 
-  ipcMain.on('anadirProducto', anadirProducto); // ! <<<---------------------
+  ipcMain.handle('openFile', openFile); // ! <<<--------------------- CARGAR FACTURAS FUERA DE LA CARPETA DE FACTURAS
+
+  ipcMain.on('anadirProducto', anadirProducto);
 
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
@@ -266,21 +269,13 @@ const mostrarVentana = () => {
   }
 }
 
-/*
-const sendStock = (event, datos) => {
-  mainWindow.webContents.send('sendStock', datos); // ! <<<----------- Esto envía a la mainWindow o la altaProductos ????
-}
-*/
-
 const anadirProducto = (event, producto) => {
-  console.log("main > anadirProducto");
-
-  mainWindow.webContents.send('getAltaProducto', producto);
-
+  mainWindow.webContents.send('mandar_principal', producto);
 }
 
 const readFile = (event, name) => {
   return new Promise((resolve, reject) => {
+    console.log(name);
     if (fs.existsSync(name)) {
       fs.readFile(name, 'utf-8', (err, data) => {
         if (err) reject(new Error(err));
@@ -298,7 +293,6 @@ const writeFile = (event, name, data) => {
   } if (!name === './productos.json') {
     name = "./facturas" + name;
   }
-  console.log(data);
 
   return new Promise((resolve, reject) => {
     fs.writeFile(name, JSON.stringify(data), (err) => {

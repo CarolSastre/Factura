@@ -149,7 +149,6 @@ let menuTemplate = [{
     label: 'Cargar Factura',
     click: async () => {
       const filePath = await openFile();
-      console.log(filePath);
       mainWindow.webContents.send('mandar_principal', filePath);
     }
   }]
@@ -275,7 +274,7 @@ const anadirProducto = (event, producto) => {
 
 const readFile = (event, name) => {
   return new Promise((resolve, reject) => {
-    console.log(name);
+    
     if (fs.existsSync(name)) {
       fs.readFile(name, 'utf-8', (err, data) => {
         if (err) reject(new Error(err));

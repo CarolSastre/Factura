@@ -1,26 +1,30 @@
 [
-  {
-    "nombre": "Queso",
-    "precio": 6.69
-  },
-  {
-    "nombre": "Harina (1kg)",
-    "precio": 3.5
-  },
-  {
-    "nombre": "Nutella",
-    "precio": 4.3
-  },
-  {
-    "nombre": "Mantequilla",
-    "precio": 2.5
-  },
-  {
-    "nombre": "Pan",
-    "precio": 0.9
-  },
-  {
-    "nombre": "Pepe",
-    "precio": 4
-  }
+    {
+        "descripcion": "Aceite",
+        "precio": "6"
+    },
+    {
+        "descripcion": "Burn",
+        "precio": "0.95"
+    },
+    {
+        "descripcion": "Leche",
+        "precio": "1"
+    },
+    {
+        "descripcion": "Lechuga",
+        "precio": "0.8"
+    },
+    {
+        "descripcion": "Manzana",
+        "precio": "0.6"
+    },
+    {
+        "descripcion": "Nutella",
+        "precio": "4.5"
+    },
+    {
+        "descripcion": "Patatas",
+        "precio": "4.5"
+    }
 ]

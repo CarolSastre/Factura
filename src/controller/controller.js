@@ -1,8 +1,5 @@
-// const fs = require('fs')
-
 import { Stock } from '../model/stock.js';
 import { Factura } from '../model/factura.js';
-import { FileManager } from '../model/fileManager.js';
 
 import { View } from '../view/view.js';
 
@@ -11,7 +8,6 @@ export class Controller {
     // Access to view and model
     #stock;
     #factura;
-    #fileManager
     #view;
 
     // ruta donde se guardan las facturas
@@ -22,27 +18,19 @@ export class Controller {
         this.#stock = new Stock();
         this.#factura = new Factura();
         this.#view = new View();
-        this.#fileManager = new FileManager()
     }
 
-    // Initializing classes
+    // Inicializar clases
     async init() {
-
         await this.#stock.init()
             .then((value) => {
                 this.buscarProductos();
             });
 
         this.#factura.init();
-        this.#fileManager.init();
 
         this.#view.init();
 
-        /*
-        if (!fs.existsSync(this.#ruta)) {
-            fs.mkdirSync(this.#ruta);
-        }
-        */
         electronAPI.createDir(this.#ruta)
             .then((value) => {
                 this.buscarFacturas();
@@ -53,7 +41,9 @@ export class Controller {
     getFactura() { return this.#factura }
     getView() { return this.#view }
 
-    // Busca productos en fichero productos.json y  desplegable de produtos
+    /**
+     * Busca productos en fichero productos.json y  desplegable de produtos
+     */
     buscarProductos() {
         this.#stock.buscarProductos()
             .then((value) => {
@@ -64,36 +54,33 @@ export class Controller {
             })
     }
 
-
-    // Busca Facturas en directorio actual y carga desplegable de facturas
+    /**
+     * Busca Facturas en directorio actual y carga desplegable de facturas
+     */
     buscarFacturas() {
         electronAPI.searchFiles(this.#ruta)
             .then((value) => {
                 value = value.filter((element) => element.startsWith('Factura_'));
-                //
 
                 this.#view.cargarFacturas(value);
             })
             .catch((error) => { console.log(error); })
     }
 
-    // Muestra y oculta la ventana de alta de productos llamando al metodo con el mismo nombre de la vista
-    promptWindow() {
-        this.#view.promptWindow();
-    }
-
-    // Carga la información del producto seleccionado del desplegable de productos
-    // En el caso que no se seleccione ninguno se resetean los campos
+    /**
+     * Carga la información del producto seleccionado del desplegable de productos
+     * En el caso que no se seleccione ninguno se resetean los campos
+     */
     cargarInfoProducto() {
         let producto = this.#stock.getProductByDescripcion(this.#view.getSelectedProducto());
-        if (producto != null) this.#view.mostrarInfoProducto(producto.toJSON()); // !
+        if (producto != null) this.#view.mostrarInfoProducto(producto.toJSON());
         else this.#view.mostrarInfoProducto();
     }
 
-
-    // Calcula el importe total de la factura
+    /**
+     * Calcula el importe total de la factura
+     */
     totalizar() {
-
         // calculamos el total en el modelo objeto factura
         this.#factura.totalizar()
 
@@ -101,8 +88,10 @@ export class Controller {
         this.#view.totalizar(this.#factura.getImporteTotal().toFixed(2));
     }
 
-
-    // Borra la factura cargada pudiendo resetear el desplegable de facturas si le pasamos true
+    /**
+     * Borra la factura cargada pudiendo resetear el desplegable de facturas si le pasamos true
+     * @param {boolean} resetFacturaSelect 
+     */
     borraFactura(resetFacturaSelect = false) {
         this.#view.borraFactura();
         if (resetFacturaSelect) this.#view.resetFacturaSelect();
@@ -112,8 +101,9 @@ export class Controller {
         this.totalizar();
     }
 
-
-    // Carga la factura seleccionada del desplegable de facturas
+    /**
+     * Carga la factura seleccionada del desplegable de facturas
+     */
     cargarFactura() {
         this.borraFactura(false);
 
@@ -121,7 +111,7 @@ export class Controller {
 
             let fichero = this.#view.getSelectedFactura() + ".json";
 
-            this.#factura.leerFactura(fichero)
+            this.#factura.leerFactura(fichero) //*
                 .then((value) => {
                     this.#view.generarTabla(value).forEach((elemento) => {
                         elemento[0].addEventListener('click', () => {
@@ -139,11 +129,36 @@ export class Controller {
         }
     }
 
+    /**
+     * Carga la factura abierta desde el explorador de archivos
+     */
+    cargarFacturaExterna(datos) {
+        return this.#factura.leerFactura(datos)
+            .then((value) => {
+                this.#view.generarTabla(value).forEach((elemento) => {
+                    elemento[0].addEventListener('click', () => {
+                        // eliminamos la fila que contiene la x donde se ha hecho click
+                        elemento[0].closest('tr').remove();
+                        this.#factura.eliminarArticulo(elemento[1]);
+                        // Este totalizar se ejecuta al hacer click y eliminar una fila de la factura
+                        this.totalizar();
+                    })
+                })
+                // Este totalizar se ejecuta una vez cargada la factura
+                this.totalizar();
 
+                // Inhabilitar los botones de modificar y eliminar factura
+                document.getElementById("btnModificarFactura").disabled = 'disabled';
+                document.getElementById("btnEliminarFactura").disabled = 'disabled';
+            })
+            .catch((error) => console.log(error));
+    }
 
-
-    // Almacena la factura que tenemos en pantalla. Puede guardarse en una nueva (acion = 0) o en la misma que estamos viendo (accion = 1)
-    // Es obligatorio que reciba 0 o 1
+    /**
+     * Almacena la factura que tenemos en pantalla. Puede guardarse en una nueva (acion = 0) o en la misma que estamos viendo (accion = 1)
+     * Es obligatorio que reciba 0 o 1
+     * @param {Number} accion 
+     */
     guardaFactura(accion) {
         let name = '';
         if (accion == 1) name = this.#view.getSelectedFactura() + ".json";
@@ -155,10 +170,9 @@ export class Controller {
 
     }
 
-
-
-
-    // Elimina la factura que tenemos en pantalla
+    /**
+     * Elimina la factura que tenemos en pantalla
+     */
     eliminaFactura() {
         electronAPI.removeFile(this.#view.getSelectedFactura() + ".json")
             .then(() => {
@@ -167,34 +181,25 @@ export class Controller {
         this.borraFactura(true);
     }
 
-
-
-
-    // Da de alta un nuevo producto
+    /**
+     * Da de alta un nuevo producto
+     * @param {JSON} producto 
+     */
     altaProducto(producto) {
-
         // Devuelve todo el stock de productos como array de objetos JSON
         this.#stock.altaProductoInStock(producto.descripcion, producto.precio)
             .then((value) => {
                 this.#view.cargarProductos(value);
-
-                // Quita un posible mensaje de error anterior
-                //this.#view.muestraErrorProducto('');
             })
             .catch((error) => {
                 console.log(error);
-                //this.#view.muestraErrorProducto(error);
             });
-
-        // Vacia campos del formulario de alta
-        this.#view.resetAltaProducto();
     }
 
-
-
-
+    /**
+     * Añade una fila a la tabla de la cesta
+     */
     anyadirFilaFactura() {
-
         // Recibimos un json con los datos para poder crear un articulo
         let datosArticulo = this.#view.getDatosArticulo();
 

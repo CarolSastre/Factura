@@ -1,4 +1,3 @@
-// const fs = require('fs');
 const FICHERO_PRODUCTOS = './productos.json';
 
 import { Producto } from '../model/producto.js';
@@ -20,10 +19,10 @@ export class Stock {
 
     init() {
         // Creamos el fichero de productos vacío en caso que no exista
-        //this.#crearProductosFile()
         return new Promise((resolve, reject) => {
             electronAPI.createProdFile()
                 .then((value) => {
+                    console.log(value);
                     resolve(value);
                 }).catch((err) => {
                     reject(err);
@@ -31,25 +30,13 @@ export class Stock {
         });
     }
 
-    // Craerá el fichero de productos vacío en caso que no exista
-    #crearProductosFile() {
-        /*
-        return new Promise((resolve, reject) => {
-            if (!fs.existsSync(FICHERO_PRODUCTOS)) {
-                fs.writeFile(FICHERO_PRODUCTOS, '[]', (err) => {
-                    if (err) reject(new Error('No se ha podido crear el fichero de productos'));
-                    else resolve('');
-                });
-            }
-        });
-        */
-    }
-
-    // Busca los productos en el fichero FICHERO_PRODUCTOS de manera asincrona cargando el array this.#stock
+    /**
+     * Busca los productos en el fichero productos.json de manera asincrona cargando el array this.#stock
+     * @returns Promise - resolve: this.#stock; reject - error
+     */
     buscarProductos() {
         this.#stock = []
         return new Promise(async (resolve, reject) => {
-            // ! ----------------------
             electronAPI.readFile(FICHERO_PRODUCTOS)
                 .then((value) => {
                     JSON.parse(value).forEach((element) => {
@@ -63,17 +50,25 @@ export class Stock {
         })
     }
 
-    // A partir de la descripcion de un producto devuelve el objeto producto o null si no existe
+    /**
+     * A partir de la descripcion de un producto devuelve el objeto producto o null si no existe
+     * @param {String} descripcion 
+     * @returns Producto con esa descripción o null
+     */
     getProductByDescripcion(descripcion) {
         if (this.#stock.find(item => item.getDescripcion() === descripcion) == undefined) return null;
         else return this.#stock.find(item => item.getDescripcion() === descripcion);
     }
 
-    // Da de alta un producto tanto en el archivo FICHERO_PRODUCTOS como en el array this.#stock a prtir de una descripción y un precio y devuelve un array de objetos JSON de todo el stock
+    /**
+     * Da de alta un producto tanto en el archivo FICHERO_PRODUCTOS como en el array this.#stock a prtir de una descripción y un precio y devuelve un array de objetos JSON de todo el stock
+     * @param {String} descripcion 
+     * @param {float} precio 
+     * @returns (Promise) resolve - this.#stock
+     */
     altaProductoInStock(descripcion, precio) {
         return new Promise((resolve, reject) => {
-
-            let producto = new Producto(descripcion, precio)
+            let producto = new Producto(descripcion, precio);
 
             let yaExiste = false
             this.#stock.forEach((elemento) => {
@@ -86,7 +81,7 @@ export class Stock {
             if (!yaExiste) {
                 this.#stock.push(producto);
 
-                // Ordeno los productos
+                // Ordenar los productos
                 this.#stock.sort();
                 electronAPI.writeFile(FICHERO_PRODUCTOS, this.getStockJSON())
                     .then((value) => {

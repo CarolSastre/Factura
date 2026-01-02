@@ -4,9 +4,6 @@ const controller = new Controller();
 
 window.onload = () => {
   // addEventListeners de la aplicacion
-
-  document.getElementById("logo").addEventListener('click', () => controller.promptWindow());
-
   document.getElementById("factura").addEventListener('change', () => controller.cargarFactura());
 
   document.getElementById("producto").addEventListener('change', () => controller.cargarInfoProducto());
@@ -23,24 +20,11 @@ window.onload = () => {
   controller.init();
 }
 
-window.electronAPI.mandar_principal((event, datos) => {
-  if (typeof (datos) === "string") {
-    controller.getFactura().leerFactura(datos)
-      .then((value) => {
-        controller.getView().generarTabla(value).forEach((elemento) => {
-          elemento[0].addEventListener('click', () => {
-            // eliminamos la fila que contiene la x donde se ha hecho click
-            elemento[0].closest('tr').remove();
-            controller.getFactura().eliminarArticulo(elemento[1]);
-            // Este totalizar se ejecuta al hacer click y eliminar una fila de la factura
-            this.totalizar();
-          })
-        })
-        // Este totalizar se ejecuta una vez cargada la factura
-        controller.totalizar();
-      })
-      .catch((error) => console.log(error))
-  } else {
+window.electronAPI.mandar_principal((event, datos, tipo) => {
+  // Separa las acciones dependiendo de los datos a procesar
+  if (tipo === 0) { // Añadir un producto
     controller.altaProducto(datos);
+  } else if (tipo === 1) { // Cargar una factura
+    controller.cargarFacturaExterna(datos);
   }
 })

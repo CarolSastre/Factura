@@ -9,8 +9,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   createDir: (name) => { return ipcRenderer.invoke('createDir', name) },
   mostrarVentana: () => { return ipcRenderer.invoke('mostrarVentana') },
 
-  //sendStock: (datos) => { return ipcRenderer.send('sendStock', datos) },
-  mandar_principal: (producto) => { return ipcRenderer.on('mandar_principal', producto) },
+  mandar_principal: (datos, tipo) => { return ipcRenderer.on('mandar_principal', datos, tipo) },
 
   openFile: () => { return ipcRenderer.invoke('openFile') }
 })

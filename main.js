@@ -3,17 +3,12 @@ const path = require('path');
 const url = require('url');
 const fs = require('fs');
 const moment = require('moment');
-const { syncBuiltinESMExports } = require('module');
 
 const FICHERO_PRODUCTOS = './productos.json';
 const RUTA = './facturas';
 
 let mainWindow;
 let altaWindow;
-
-// DB
-const sqlite3 = require('sqlite3');
-const db = new sqlite3.Database('./factura_database.db');
 
 let menuTemplate = [{
   label: 'Edit App',
@@ -154,7 +149,7 @@ let menuTemplate = [{
     label: 'Cargar Factura',
     click: async () => {
       const filePath = await openFile();
-      mainWindow.webContents.send('mandar_principal', filePath);
+      mainWindow.webContents.send('mandar_principal', filePath, 1);
     }
   }]
 }, {
@@ -254,7 +249,6 @@ app.on('activate', function () {
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') {
-    db.close();
     app.quit()
   }
 })
@@ -275,22 +269,11 @@ const mostrarVentana = () => {
 }
 
 const anadirProducto = (event, producto) => {
-  mainWindow.webContents.send('mandar_principal', producto);
+  mainWindow.webContents.send('mandar_principal', producto, 0);
 }
 
 const readFile = async (event, name) => {
-  if (name === './productos') {
-    name = FICHERO_PRODUCTOS;
-  } else {
-    name = "facturas";
-  }
-
   return new Promise((resolve, reject) => {
-    const datos = db.all("SELECT * FROM ?", [name]);
-
-    if (datos instanceof Error) reject(datos)
-    resolve(datos);
-    /*
     if (fs.existsSync(name)) {
       fs.readFile(name, 'utf-8', (err, data) => {
         if (err) reject(new Error(err));
@@ -299,7 +282,6 @@ const readFile = async (event, name) => {
     } else {
       reject(new Error(name + ' not found'))
     };
-    */
   });
 }
 
@@ -311,13 +293,10 @@ const writeFile = (event, name, data) => {
   }
 
   return new Promise((resolve, reject) => {
-    
-    /*
     fs.writeFile(name, JSON.stringify(data), (err) => {
       if (err) reject(new Error(err));
       resolve('');
     })
-    */
   })
 }
 

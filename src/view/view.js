@@ -17,7 +17,10 @@ export class View {
         this.#btnEliminarFactura = document.getElementById("btnEliminarFactura")
     }
 
-    // Obtenemos un objeto JSON con los datos que figuran para ser introducidos en una fila
+    /**
+     * Obtenemos un objeto JSON con los datos que figuran en los input para ser introducidos en una fila
+     * @returns Objeto JSON del producto
+     */
     getDatosArticulo() {
         return {
             descripcion: this.getSelectedProducto(),
@@ -26,12 +29,17 @@ export class View {
         }
     }
 
-    // Obtenemos la descripcion del articulo seleccionado
+    /**
+     * @returns La descripcion del articulo seleccionado
+     */
     getSelectedProducto() {
         return this.#desplegableProducto.options[this.#desplegableProducto.selectedIndex].textContent;
     }
 
-    // Obtenemos el nombre de la fatura seleccionada o '' si no hay ninguna ademas de activar o no botones
+    /**
+     * Obtenemos el nombre de la factura seleccionada o '' si no hay ninguna ademas de activar o no botones
+     * @returns String con la ruta a la factura o un string vacío
+     */
     getSelectedFactura() {
         if (this.#desplegableFactura.selectedIndex == 0) {
             this.#btnModificarFactura.disabled = 'disabled';
@@ -44,41 +52,26 @@ export class View {
             return "./facturas/" + this.#desplegableFactura.options[this.#desplegableFactura.selectedIndex].textContent; // ! <-----------------
         }
     }
-
-    // obtenemos un objeto con los datos introducidos en el alta de producto
-    getDatosAlta() {
-        return { descripcion: document.getElementById('productoName').value, precio: document.getElementById('productoPrecio').value };
-    }
-
-    // función que muestra un mensaje en la ventana de alta de producto
-    muestraErrorProducto(error) {
-        document.getElementById("error").textContent = error; // TODO: mandar a la ventana secundaria
-    }
-
-    // Vaciamos las cajas de nombre y precio del producto en el alta
-    resetAltaProducto() {
-        document.getElementById("productoName").value = ""
-        document.getElementById("productoPrecio").value = ""
-    }
-
-    // muestra u oculta la ventana de alta de producto
-    promptWindow() {
-        electronAPI.mostrarVentana();
-    }
-
-    // Carga el desplegable de productos a partir de un array de productos en formato JSON
+    
+    /**
+     * Carga el desplegable de productos a partir de un array de productos en formato JSON
+     * @param {JSON[]} productos
+     */
     cargarProductos(productos) {
         this.#desplegableProducto.innerHTML = '<option>Seleccione un producto...</option>';
 
         Array.from(productos).forEach((elemento, index) => {
             let option = document.createElement("option");
-            option.value = elemento.getDescripcion(); ////
-            option.textContent = elemento.getDescripcion(); // ! ?????
+            option.value = elemento.getDescripcion();
+            option.textContent = elemento.getDescripcion();
             this.#desplegableProducto.append(option);
         })
     }
 
-    // A partir de un array de archivos carga el desplegable
+    /**
+     * A partir de un array de archivos carga el desplegable
+     * @param {Array} archivos 
+     */
     cargarFacturas(archivos) {
         document.getElementById('factura').innerHTML = '<option>Seleccione una factura...</option>';
         archivos.forEach((elemento) => {
@@ -88,9 +81,11 @@ export class View {
         document.getElementById('btnEliminarFactura').disabled = "disabled";
     }
 
-    // Muestra la información de un producto seleccionado, se la pasa el precio del producto cogido por el controlador del modelo
+    /**
+     * Muestra la información de un producto seleccionado, se la pasa el precio del producto cogido por el controlador del modelo
+     * @param producto
+     */
     mostrarInfoProducto(producto) {
-
         if (this.#desplegableProducto.selectedIndex == 0) {
             document.getElementById("precio").value = '';
             document.getElementById("importe").value = '';
@@ -101,22 +96,29 @@ export class View {
         }
     }
 
-    // Borra la factura de la pantalla
+    /**
+     * Borra la factura de la pantalla
+     */
     borraFactura() {
         let tbody = document.getElementById("tabla").children[1];
         tbody.innerHTML = '';
     }
 
-    // Resetea el desplegable de la factura
+    /**
+     * Resetea el desplegable de la factura
+     */
     resetFacturaSelect() {
         this.#desplegableFactura.selectedIndex = 0;
         this.#btnModificarFactura.disabled = 'disabled';
         this.#btnEliminarFactura.disabled = 'disabled';
     }
 
-    // Genera la tabla a partir de la cesta de la factura que viene como array de articulos en formato JSON
+    /**
+     * Genera la tabla a partir de la cesta de la factura que viene como array de articulos en formato JSON
+     * @param {JSON[]} cesta 
+     * @returns Array con las referencias para añadir el boton de eliminar fila
+     */
     generarTabla(cesta) {
-
         // Modificamos la vista de la factura
         let tbody = document.getElementById("tabla").children[1];
         tbody.innerHTML = '';
@@ -144,10 +146,11 @@ export class View {
         return botonArray;
     }
 
-
-    // Muestra el total de la factura
+    /**
+     * Muestra el total de la factura
+     * @param {float} total 
+     */
     totalizar(total) {
-
         // Visualizamos el total en la vista
         var filatotal = "<tr><td></td><td></td><td>Total</td><td align=\"right\">" + total + "</td><td style=\"width:15px\"></td></tr>";
         document.getElementById("tfoot").innerHTML = filatotal;

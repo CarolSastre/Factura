@@ -1,6 +1,3 @@
-// const fs = require('fs')
-// const moment = require('moment');
-
 import { Articulo } from './articulo.js';
 import { Producto } from './producto.js';
 
@@ -30,24 +27,18 @@ export class Factura {
         return array
     }
 
-
-    // Recibe en accion si debe guardarse en un fichero nuevo generando el nombre (accion=0) o en el mismo fichero (accion=1), entonces el nombre viene en el campo name
+    /**
+     * Recibe en accion si debe guardarse en un fichero nuevo generando el nombre (accion=0) o en el mismo fichero (accion=1), entonces el nombre viene en el campo name
+     * @param {String} name
+     * @returns (Promise) resolve - String vacío
+     */
     guardarFactura(name = "") {
-
         return new Promise((resolve, reject) => {
-
             let arrayArticulos = []
 
             this.#cesta.forEach((elemento) => {
                 arrayArticulos.push(elemento.toJSON())
             })
-
-            // ! --------
-            /*
-            let path = "";
-            if (accion == 0) path = ruta + "/Factura_" + moment().format("YYYYMMDD_HHmmss") + ".json";
-            else path = ruta + "/" + name;
-            */
 
             electronAPI.writeFile(name, arrayArticulos)
                 .then((res) => {
@@ -58,9 +49,13 @@ export class Factura {
         })
     }
 
-    // Creamos o modificamos el articulo en la cesta
+    /**
+     * Creamos o modificamos el articulo en la cesta
+     * @param {String} descripcion 
+     * @param {String} precio 
+     * @param {String} unidades 
+     */
     anadirArticulo(descripcion, precio, unidades) {
-
         let articulo = new Articulo(new Producto(descripcion, precio), unidades);
 
         let existeArticulo = false
@@ -70,13 +65,13 @@ export class Factura {
                 existeArticulo = true;
             }
         })
+        
         if (!existeArticulo) {
             this.#cesta.push(articulo);
         }
     }
 
     #removeItemOnce(arr, articulo) {
-
         let indice = -1;
 
         arr.forEach((elemento, index) => {
@@ -102,8 +97,11 @@ export class Factura {
 
     vaciarArticulos() { this.#cesta = [] }
 
-
-    // Lee el contenido del fichero de la factura y devuelve la lista de articulos como array de objetos JSON
+    /**
+     * Lee el contenido del fichero de la factura y devuelve la lista de articulos como array de objetos JSON
+     * @param {String} name 
+     * @returns (Promise) resolve - JSON de la compra
+     */
     leerFactura(name) {
         return electronAPI.readFile(name)
             .then((data) => {

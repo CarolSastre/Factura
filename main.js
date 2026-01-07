@@ -7,6 +7,9 @@ const moment = require('moment');
 const FICHERO_PRODUCTOS = './productos.json';
 const RUTA = './facturas';
 
+const sqlite3 = require('sqlite3');
+const db = new sqlite3.Database('./factura_database.db');
+
 let mainWindow;
 let altaWindow;
 
@@ -235,6 +238,9 @@ app.on('ready', function () {
 
   ipcMain.on('anadirProducto', anadirProducto);
 
+  ipcMain.handle('selectProductos', selectProductos);
+  ipcMain.handle('insertProducto', insertProducto);
+
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
   createWindows();
@@ -249,6 +255,7 @@ app.on('activate', function () {
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') {
+    db.close()
     app.quit()
   }
 })
@@ -270,6 +277,31 @@ const mostrarVentana = () => {
 
 const anadirProducto = (event, producto) => {
   mainWindow.webContents.send('mandar_principal', producto, 0);
+}
+
+const selectProductos = (event, name) => {
+  return new Promise((reject, resolve)=> {
+    db.all("SELECT * FROM productos", (err, data))
+    .then((datos)=> {
+      resolve(datos);
+    })
+    .catch((err)=> {
+      reject(err);
+    });
+  })
+}
+
+const insertProducto = (event, descripcion, precio) => {
+  return new Promise((resolve, reject) => {
+    db.run("INSERT INTO productos (descripcion, precio) VALUES (?,?)",
+      [descripcion, precio],
+      (err, data)
+    ).then((data) => {
+      resolve(data);
+    }).catch((err) => {
+      reject(err);
+    })
+  })
 }
 
 const readFile = async (event, name) => {

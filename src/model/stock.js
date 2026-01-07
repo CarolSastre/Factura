@@ -37,9 +37,9 @@ export class Stock {
     buscarProductos() {
         this.#stock = []
         return new Promise(async (resolve, reject) => {
-            electronAPI.readFile(FICHERO_PRODUCTOS)
+            electronAPI.selectProductos(FICHERO_PRODUCTOS)
                 .then((value) => {
-                    JSON.parse(value).forEach((element) => {
+                    value.forEach((element) => {
                         let entry = new Producto(element.descripcion, element.precio)
                         this.#stock.push(entry)
                     })
@@ -83,7 +83,7 @@ export class Stock {
 
                 // Ordenar los productos
                 this.#stock.sort();
-                electronAPI.writeFile(FICHERO_PRODUCTOS, this.getStockJSON())
+                electronAPI.insertProducto(descripcion, precio)
                     .then((value) => {
                         resolve(this.getStock())
                     })

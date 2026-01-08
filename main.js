@@ -8,7 +8,8 @@ const FICHERO_PRODUCTOS = './productos.json';
 const RUTA = './facturas';
 
 const sqlite3 = require('sqlite3');
-const db = new sqlite3.Database('./factura_database.db');
+const dbPath = "./factura_database.db";
+const db = new sqlite3.Database(dbPath);
 
 let mainWindow;
 let altaWindow;
@@ -225,7 +226,30 @@ function createWindows() {
   })
 }
 
+function createTables() {
+  db.run(`CREATE TABLE IF NOT EXISTS productos (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    descripcion TEXT NOT NULL,
+    precio REAL NOT NULL
+  )`);
+
+  db.run(`CREATE TABLE IF NOT EXISTS facturas (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    fecha	TEXT NOT NULL DEFAULT (CURRENT_TIMESTAMP)
+  )`);
+
+  db.run(`CREATE TABLE IF NOT EXISTS detalle_facturas (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_factura INTEGER NOT NULL,
+    id_producto INTEGER NOT NULL,
+    cantidad INTEGER DEFAULT 1,
+    CONSTRAINT id_factura FOREIGN KEY(id_factura) REFERENCES facturas(id),
+    CONSTRAINT id_producto FOREIGN KEY(id_producto) REFERENCES productos(id)
+  )`);
+}
+
 app.on('ready', function () {
+
   ipcMain.handle('readFile', readFile);
   ipcMain.handle('writeFile', writeFile);
   ipcMain.handle('removeFile', removeFile);
@@ -248,6 +272,7 @@ app.on('ready', function () {
 
 app.on('activate', function () {
   if (BrowserWindow.getAllWindows().length === 0) {
+    createTables()
     createWindows()
   }
 })
@@ -279,29 +304,22 @@ const anadirProducto = (event, producto) => {
   mainWindow.webContents.send('mandar_principal', producto, 0);
 }
 
-const selectProductos = (event, name) => {
-  return new Promise((reject, resolve)=> {
-    db.all("SELECT * FROM productos", (err, data))
-    .then((datos)=> {
-      resolve(datos);
-    })
-    .catch((err)=> {
-      reject(err);
+const selectProductos = (event) => {
+  return new Promise((resolve, reject) => {
+    db.all("SELECT * FROM productos", (err, rows) => {
+      if (err) reject(err);
+      else resolve(rows);
     });
-  })
+  });
 }
 
 const insertProducto = (event, descripcion, precio) => {
   return new Promise((resolve, reject) => {
-    db.run("INSERT INTO productos (descripcion, precio) VALUES (?,?)",
-      [descripcion, precio],
-      (err, data)
-    ).then((data) => {
+    db.run("INSERT INTO productos (descripcion, precio) VALUES (?, ?)", [descripcion, precio], (err, data) => {
+      if (err) reject(err);
       resolve(data);
-    }).catch((err) => {
-      reject(err);
-    })
-  })
+    });
+  });
 }
 
 const readFile = async (event, name) => {

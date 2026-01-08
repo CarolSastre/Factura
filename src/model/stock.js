@@ -18,28 +18,19 @@ export class Stock {
     }
 
     init() {
-        // Creamos el fichero de productos vacío en caso que no exista
-        return new Promise((resolve, reject) => {
-            electronAPI.createProdFile()
-                .then((value) => {
-                    console.log(value);
-                    resolve(value);
-                }).catch((err) => {
-                    reject(err);
-                });
-        });
     }
 
     /**
      * Busca los productos en el fichero productos.json de manera asincrona cargando el array this.#stock
      * @returns Promise - resolve: this.#stock; reject - error
-     */
+    */
     buscarProductos() {
         this.#stock = []
         return new Promise(async (resolve, reject) => {
-            electronAPI.selectProductos(FICHERO_PRODUCTOS)
+            electronAPI.selectProductos()
                 .then((value) => {
-                    value.forEach((element) => {
+                    console.log(value);
+                    Array.from(value).forEach((element) => {
                         let entry = new Producto(element.descripcion, element.precio)
                         this.#stock.push(entry)
                     })
@@ -77,7 +68,7 @@ export class Stock {
                     reject(new Error('El producto ' + descripcion + ' ya existe'))
                 }
             })
-            
+
             if (!yaExiste) {
                 this.#stock.push(producto);
 

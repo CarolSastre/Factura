@@ -22,10 +22,8 @@ export class Controller {
 
     // Inicializar clases
     async init() {
-        await this.#stock.init()
-            .then((value) => {
-                this.buscarProductos();
-            });
+
+        this.buscarProductos();
 
         this.#factura.init();
 
@@ -47,6 +45,7 @@ export class Controller {
     buscarProductos() {
         this.#stock.buscarProductos()
             .then((value) => {
+                console.log("Productos cargados");
                 this.#view.cargarProductos(value);
             })
             .catch((error) => {
